@@ -82,17 +82,21 @@ async function Inner({ searchParams }: { searchParams: PageProps<'/admin'>['sear
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Stat label="K-factor" value={v.kFactor.value?.toFixed(3) ?? '—'} sample={`${v.kFactor.numerator} referred quizzes / ${v.kFactor.sample} plays`} />
           <Stat label="Play → create" value={pct(v.playToCreate.value, 1)} sample={`${v.playToCreate.numerator} of ${v.playToCreate.sample} players`} />
-          <Stat label="Referred sessions per referrer" value={v.referralsPerReferrer.value?.toFixed(2) ?? '—'} sample={`${v.referralsPerReferrer.numerator} referred / ${v.referralsPerReferrer.sample} referrers`} />
+          <Stat
+            label="Referred sessions per referrer"
+            value={v.referralsPerReferrer.value?.toFixed(2) ?? '—'}
+            sample={`${v.referralsPerReferrer.numerator} referred / ${v.referralsPerReferrer.sample} referrers`}
+          />
         </div>
-        <h3 className="mt-5 mb-2 font-display font-bold">Spread of referrals</h3>
+        <h3 className="font-display mt-5 mb-2 font-bold">Spread of referrals</h3>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
           {Object.entries(v.spread).map(([k, n]) => (
             <Stat key={k} label={k.replace(/_/g, ' ')} value={n} />
           ))}
         </div>
-        <h3 className="mt-5 mb-2 font-display font-bold">Share channels</h3>
+        <h3 className="font-display mt-5 mb-2 font-bold">Share channels</h3>
         <div className="flex flex-col gap-2">
-          {v.channels.length === 0 && <p className="text-sm text-ink-soft">No shares in this period.</p>}
+          {v.channels.length === 0 && <p className="text-ink-soft text-sm">No shares in this period.</p>}
           {v.channels.map((c) => (
             <BarRow key={c.channel} label={c.channel} value={c.n} max={Math.max(...v.channels.map((x) => x.n))} right={c.n} />
           ))}

@@ -54,9 +54,9 @@ export function RevealStage({ seed, creatorGender, score, onResult }: RevealStag
       {stage === 'suspense' || stage === 'idle' ? (
         <p className="font-display text-3xl font-extrabold">{line}</p>
       ) : (
-        <p className="font-display text-7xl font-extrabold text-terracotta tabular-nums">
+        <p className="font-display text-terracotta text-7xl font-extrabold tabular-nums">
           {score}
-          <span className="text-4xl text-ink-soft">/10</span>
+          <span className="text-ink-soft text-4xl">/10</span>
         </p>
       )}
     </section>

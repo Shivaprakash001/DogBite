@@ -13,7 +13,12 @@ export interface SessionState {
   adult: boolean;
 }
 
-const newShareRef = () => randomBytes(8).toString('base64url').replace(/[^a-zA-Z0-9]/g, '').slice(0, 10).padEnd(10, '0');
+const newShareRef = () =>
+  randomBytes(8)
+    .toString('base64url')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .slice(0, 10)
+    .padEnd(10, '0');
 
 /** Session id from the cookie set by the proxy (null for bots that drop cookies). */
 export async function readSessionId(): Promise<string | null> {
@@ -38,13 +43,13 @@ async function resolveRefSession(ref: string | null): Promise<string | null> {
  * Upsert the session row. First-touch attribution (ref / utm) is only written on
  * insert so later visits never overwrite where someone originally came from.
  */
-export async function ensureSession(
-  sid: string,
-  meta: { ref?: string | null; utm?: string | null; userAgent?: string | null } = {},
-): Promise<SessionState> {
+export async function ensureSession(sid: string, meta: { ref?: string | null; utm?: string | null; userAgent?: string | null } = {}): Promise<SessionState> {
   const existing = await getSessionState(sid);
   if (existing) {
-    await db().update(schema.sessions).set({ lastSeenAt: sql`now()` }).where(eq(schema.sessions.id, sid));
+    await db()
+      .update(schema.sessions)
+      .set({ lastSeenAt: sql`now()` })
+      .where(eq(schema.sessions.id, sid));
     return existing;
   }
   const refSessionId = await resolveRefSession(meta.ref ?? null);

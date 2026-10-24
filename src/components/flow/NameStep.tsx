@@ -41,10 +41,10 @@ export function NameStep({ title, hint, initial, busy, onSubmit, top }: NameStep
     >
       {top}
       <div>
-        <label htmlFor={id} className="block font-display text-3xl font-extrabold">
+        <label htmlFor={id} className="font-display block text-3xl font-extrabold">
           {title}
         </label>
-        <p className="mt-1 text-ink-soft" id={`${id}-hint`}>
+        <p className="text-ink-soft mt-1" id={`${id}-hint`}>
           {hint}
         </p>
       </div>
@@ -63,14 +63,18 @@ export function NameStep({ title, hint, initial, busy, onSubmit, top }: NameStep
           placeholder={copy.name.placeholder}
           aria-describedby={`${id}-hint ${id}-count${error ? ` ${id}-err` : ''}`}
           aria-invalid={!!error}
-          className="h-16 w-full rounded-2xl bg-paper px-5 pr-16 font-display text-2xl font-bold ring-2 ring-line outline-none placeholder:text-ink-soft/50 focus:ring-4 focus:ring-terracotta"
+          className="bg-paper font-display ring-line placeholder:text-ink-soft/50 focus:ring-terracotta h-16 w-full rounded-2xl px-5 pr-16 text-2xl font-bold ring-2 outline-none focus:ring-4"
         />
-        <span id={`${id}-count`} className="absolute top-1/2 right-4 -translate-y-1/2 font-display text-sm font-bold text-ink-soft tabular-nums" aria-live="polite">
+        <span
+          id={`${id}-count`}
+          className="font-display text-ink-soft absolute top-1/2 right-4 -translate-y-1/2 text-sm font-bold tabular-nums"
+          aria-live="polite"
+        >
           {length}/{QUIZ.nameMaxLength}
         </span>
       </div>
       {error && (
-        <p id={`${id}-err`} role="alert" className="-mt-2 font-semibold text-wrong">
+        <p id={`${id}-err`} role="alert" className="text-wrong -mt-2 font-semibold">
           {messages[error]}
         </p>
       )}

@@ -229,7 +229,7 @@ export const QUESTION_BANK: SeedQuestion[] = [
   },
   {
     key: 'q_rent_receipt',
-    text: 'The warden asks {name} for last month\'s rent receipt. {name}…',
+    text: "The warden asks {name} for last month's rent receipt. {name}…",
     objective_tag: 'rent',
     kind: 'research',
     segment: 'all',
@@ -293,12 +293,12 @@ export const QUESTION_BANK: SeedQuestion[] = [
       { key: 'whatsapp', label: 'WhatsApp the owner', emoji: '💬' },
       { key: 'fix', label: 'Fixes it with tape', emoji: '🩹' },
       { key: 'ignore', label: 'Lives with it', emoji: '🫠' },
-      { key: 'roommate', label: "Makes roomie do it", emoji: '👉' },
+      { key: 'roommate', label: 'Makes roomie do it', emoji: '👉' },
     ],
   },
   {
     key: 'q_water_rating',
-    text: 'Hot water in the morning at {name}\'s hostel is…',
+    text: "Hot water in the morning at {name}'s hostel is…",
     objective_tag: 'pain_points',
     kind: 'rating',
     segment: 'all',
@@ -411,7 +411,7 @@ export const QUESTION_BANK: SeedQuestion[] = [
       { key: 'earphones', label: 'Earphones, rain sounds', emoji: '🎧' },
       { key: 'record', label: 'Records it for the group', emoji: '🎙️' },
       { key: 'pillow', label: 'Throws a pillow', emoji: '🛏️' },
-      { key: 'also_snores', label: "{name} IS the tractor", emoji: '🚜' },
+      { key: 'also_snores', label: '{name} IS the tractor', emoji: '🚜' },
     ],
   },
   {
@@ -705,7 +705,7 @@ export const QUESTION_BANK: SeedQuestion[] = [
   },
   {
     key: 'q_superpower',
-    text: 'Pick {name}\'s hostel superpower.',
+    text: "Pick {name}'s hostel superpower.",
     objective_tag: 'fun',
     kind: 'fun',
     segment: 'all',
@@ -721,7 +721,7 @@ export const QUESTION_BANK: SeedQuestion[] = [
   },
   {
     key: 'q_music',
-    text: 'What is playing on {name}\'s speaker at 11 PM?',
+    text: "What is playing on {name}'s speaker at 11 PM?",
     objective_tag: 'fun',
     kind: 'fun',
     segment: 'all',
@@ -853,7 +853,7 @@ export const QUESTION_BANK: SeedQuestion[] = [
   // Sensitivity 2: kept in the bank for completeness but excluded from the default pool.
   {
     key: 'q_pocket_money',
-    text: "How much pocket money does {name} get each month?",
+    text: 'How much pocket money does {name} get each month?',
     objective_tag: 'money',
     kind: 'fun',
     segment: 'all',

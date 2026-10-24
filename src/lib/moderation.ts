@@ -6,17 +6,56 @@ import { QUIZ } from '@/config';
 
 // Matched anywhere inside a word. Only terms that never occur inside real names.
 const SUBSTRING_TERMS = [
-  'fuck', 'fuk', 'bitch', 'bastard', 'ashole', 'cunt', 'fagot',
-  'retard', 'rapist', 'chutiya', 'chutiye', 'madarchod', 'behenchod', 'bhenchod', 'bhosdi',
-  'gandu', 'lanjakodaka', 'nakodaka',
+  'fuck',
+  'fuk',
+  'bitch',
+  'bastard',
+  'ashole',
+  'cunt',
+  'fagot',
+  'retard',
+  'rapist',
+  'chutiya',
+  'chutiye',
+  'madarchod',
+  'behenchod',
+  'bhenchod',
+  'bhosdi',
+  'gandu',
+  'lanjakodaka',
+  'nakodaka',
 ];
 
 // Matched only as a whole word: these appear inside common names
 // (Harshit, Shital, Randip, Dickson, Brandi…).
 const WHOLE_WORD_TERMS = new Set([
-  'shit', 'dick', 'slut', 'whore', 'rape', 'porn', 'sex', 'fck', 'pusy', 'niga', 'niger', 'mc', 'bc', 'gaand',
-  'lund', 'loda', 'lauda', 'randi', 'harami', 'kutta', 'kamina', 'saala', 'dengu', 'lanja',
-  'puku', 'modda', 'gudda',
+  'shit',
+  'dick',
+  'slut',
+  'whore',
+  'rape',
+  'porn',
+  'sex',
+  'fck',
+  'pusy',
+  'niga',
+  'niger',
+  'mc',
+  'bc',
+  'gaand',
+  'lund',
+  'loda',
+  'lauda',
+  'randi',
+  'harami',
+  'kutta',
+  'kamina',
+  'saala',
+  'dengu',
+  'lanja',
+  'puku',
+  'modda',
+  'gudda',
 ]);
 
 const LEET: Record<string, string> = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '@': 'a', $: 's', '!': 'i' };
@@ -56,10 +95,7 @@ const HAS_LETTER_OR_DIGIT = /[\p{L}\p{N}]/u;
 export type NameError = 'empty' | 'emoji' | 'profane' | 'long';
 
 /** Trim, collapse whitespace and validate a display name. */
-export function validateDisplayName(
-  raw: string,
-  maxLength: number = QUIZ.nameMaxLength,
-): { ok: true; value: string } | { ok: false; error: NameError } {
+export function validateDisplayName(raw: string, maxLength: number = QUIZ.nameMaxLength): { ok: true; value: string } | { ok: false; error: NameError } {
   const value = raw.replace(/\s+/g, ' ').trim();
   if (!value) return { ok: false, error: 'empty' };
   if ([...value].length > maxLength) return { ok: false, error: 'long' };

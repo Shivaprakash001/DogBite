@@ -63,7 +63,7 @@ async function ResultInner({ params }: { params: Params }) {
     <>
       {mine && <TrackView name="result_view" props={{ score: result.score, tier: tier.id }} />}
       <section className="flex flex-col items-center pt-2 text-center">
-        <p className="font-display text-sm font-bold text-ink-soft">
+        <p className="font-display text-ink-soft text-sm font-bold">
           {mine ? copy.result.scoreLabel : fmt(copy.result.sharedTitle, { player: result.playerName, score: result.score, creator: quiz.creatorName })}
         </p>
         <div className="relative mt-2">
@@ -71,19 +71,19 @@ async function ResultInner({ params }: { params: Params }) {
           {result.score >= 9 && <Sticker emoji="🏆" size={48} rotate={-12} className="top-0 -left-10" />}
           {result.score <= 2 && <Sticker emoji="🚫" size={44} rotate={10} className="top-2 -right-8" />}
         </div>
-        <p className="mt-1 font-display text-7xl leading-none font-extrabold text-terracotta tabular-nums">
+        <p className="font-display text-terracotta mt-1 text-7xl leading-none font-extrabold tabular-nums">
           {result.score}
-          <span className="text-4xl text-ink-soft">/10</span>
+          <span className="text-ink-soft text-4xl">/10</span>
         </p>
         <h1 className="mt-3 text-3xl font-extrabold">{tier.title}</h1>
-        <p className="mt-2 max-w-[32ch] text-lg text-ink-soft">{message}</p>
+        <p className="text-ink-soft mt-2 max-w-[32ch] text-lg">{message}</p>
       </section>
 
       <div className="mt-6 flex flex-col gap-3">
         {mine ? (
           <Card tone="clay">
             <p className="font-display text-sm font-bold text-white/80">{copy.result.yourTurn}</p>
-            <p className="mt-0.5 font-display text-xl font-extrabold text-white">{copy.result.yourTurnSub}</p>
+            <p className="font-display mt-0.5 text-xl font-extrabold text-white">{copy.result.yourTurnSub}</p>
             <ButtonLink href="/create" variant="accent" size="lg" className="mt-3">
               ✍️ {copy.result.createCta}
             </ButtonLink>
@@ -136,7 +136,7 @@ async function ResultInner({ params }: { params: Params }) {
           {fmt(copy.board.title, { creator: quiz.creatorName })}
         </h2>
         <ScoreList rows={board} highlightAttemptIds={mine ? status.attempts.map((a) => a.id) : [attemptId]} emptyText={copy.board.empty} />
-        <Link href={paths.board(slug)} className="mt-2 inline-block min-h-11 py-3 font-display font-bold text-terracotta underline underline-offset-4">
+        <Link href={paths.board(slug)} className="font-display text-terracotta mt-2 inline-block min-h-11 py-3 font-bold underline underline-offset-4">
           {copy.result.viewBoard} →
         </Link>
       </section>

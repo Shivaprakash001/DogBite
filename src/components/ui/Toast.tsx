@@ -32,7 +32,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-2 px-4" role="status" aria-live="polite">
         {items.map((t) => (
-          <div key={t.id} className={`pointer-events-auto max-w-[400px] rounded-2xl px-4 py-3 text-center font-display text-sm font-bold shadow-soft ${toneClass[t.tone]}`}>
+          <div
+            key={t.id}
+            className={`font-display shadow-soft pointer-events-auto max-w-[400px] rounded-2xl px-4 py-3 text-center text-sm font-bold ${toneClass[t.tone]}`}
+          >
             {t.message}
           </div>
         ))}

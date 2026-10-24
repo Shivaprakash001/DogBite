@@ -1,0 +1,7 @@
+.next
+node_modules
+db/migrations
+package-lock.json
+public
+playwright-report
+test-results

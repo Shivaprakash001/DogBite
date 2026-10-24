@@ -41,11 +41,11 @@ async function DoneInner({ params }: { params: PageProps<'/create/done/[slug]'>[
       </div>
       <div className="text-center">
         <h1 className="text-3xl font-extrabold">{copy.done.title}</h1>
-        <p className="mt-2 text-ink-soft">{copy.done.sub}</p>
+        <p className="text-ink-soft mt-2">{copy.done.sub}</p>
       </div>
       <Card>
-        <p className="font-display text-sm font-bold text-ink-soft">{fmt(copy.quizLanding.title, { creator: quiz.creatorName })}</p>
-        <p className="mt-1 font-mono text-sm break-all text-terracotta-deep">{url}</p>
+        <p className="font-display text-ink-soft text-sm font-bold">{fmt(copy.quizLanding.title, { creator: quiz.creatorName })}</p>
+        <p className="text-terracotta-deep mt-1 font-mono text-sm break-all">{url}</p>
       </Card>
       <ShareActions
         url={url}
@@ -60,7 +60,7 @@ async function DoneInner({ params }: { params: PageProps<'/create/done/[slug]'>[
         🏆 {copy.done.board}
       </ButtonLink>
       {quiz.hostel && (
-        <Link href={paths.hostel(quiz.hostel.slug)} className="mx-auto min-h-11 py-2 font-display font-bold text-terracotta underline underline-offset-4">
+        <Link href={paths.hostel(quiz.hostel.slug)} className="font-display text-terracotta mx-auto min-h-11 py-2 font-bold underline underline-offset-4">
           {fmt(copy.result.hostelCta, { area: quiz.hostel.area })}
         </Link>
       )}

@@ -58,7 +58,7 @@ async function AreaInner({ params, searchParams }: Props) {
       <ButtonLink href="/create" size="lg" className="mt-6">
         ✍️ {copy.landing.cta}
       </ButtonLink>
-      <Link href={paths.leaderboard()} className="mt-3 block min-h-11 py-3 text-center font-display font-bold text-terracotta underline underline-offset-4">
+      <Link href={paths.leaderboard()} className="font-display text-terracotta mt-3 block min-h-11 py-3 text-center font-bold underline underline-offset-4">
         {copy.faceoff.subAll} →
       </Link>
       <Footer />

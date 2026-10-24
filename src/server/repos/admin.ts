@@ -28,12 +28,24 @@ export async function overview(since: Date) {
   return Object.fromEntries(Object.entries(r).map(([k, v]) => [k, num(v)])) as Record<keyof typeof r, number>;
 }
 
-export const FUNNEL_STEPS = ['landing_view', 'start_click', 'quiz_complete', 'result_view', 'create_start', 'quiz_publish', 'share_click', 'share_open'] as const;
+export const FUNNEL_STEPS = [
+  'landing_view',
+  'start_click',
+  'quiz_complete',
+  'result_view',
+  'create_start',
+  'quiz_publish',
+  'share_click',
+  'share_open',
+] as const;
 
 export async function funnel(since: Date) {
   const counts = await rows<{ name: string; n: number }>(sql`
     select name, count(distinct session_id) n from events
-    where created_at >= ${at(since)} and name in (${sql.join(FUNNEL_STEPS.map((s) => sql`${s}`), sql`, `)})
+    where created_at >= ${at(since)} and name in (${sql.join(
+      FUNNEL_STEPS.map((s) => sql`${s}`),
+      sql`, `,
+    )})
     group by name`);
   const byName = new Map(counts.map((c) => [c.name, num(c.n)]));
   const steps = FUNNEL_STEPS.map((name) => ({ name, sessions: byName.get(name) ?? 0 }));
@@ -77,7 +89,9 @@ export async function virality(since: Date) {
     left join sh b on b.session_id = s.id left join hostels hb on hb.id = b.hostel_id
     where s.ref_session_id is not null and s.created_at >= ${at(since)}`);
 
-  const channels = await rows<{ channel: string; n: number }>(sql`select channel, count(*) n from shares where created_at >= ${at(since)} group by 1 order by 2 desc`);
+  const channels = await rows<{ channel: string; n: number }>(
+    sql`select channel, count(*) n from shares where created_at >= ${at(since)} group by 1 order by 2 desc`,
+  );
   const plays = num(k.plays);
   const players = num(k.players);
   return {
@@ -114,7 +128,10 @@ export async function research(): Promise<ResearchRow[]> {
     left join attempt_answers aa on aa.quiz_question_id = qq.id
     left join attempts a on a.id = aa.attempt_id
     left join options oc on oc.id = aa.chosen_option_id
-    where q.objective_tag in (${sql.join(RESEARCH_TAGS.map((t) => sql`${t}`), sql`, `)})
+    where q.objective_tag in (${sql.join(
+      RESEARCH_TAGS.map((t) => sql`${t}`),
+      sql`, `,
+    )})
     group by qq.id, q.key, o.key, h.city, h.type, c.session_id`);
 
   const byQ = new Map<string, typeof data>();
@@ -148,7 +165,9 @@ export async function research(): Promise<ResearchRow[]> {
 
 export async function questionHealth() {
   const bank = await loadBank();
-  const stats = await rows<{ question_id: number; impressions: number; picks: number; skips: number; successes: number; failures: number }>(sql`select * from question_stats`);
+  const stats = await rows<{ question_id: number; impressions: number; picks: number; skips: number; successes: number; failures: number }>(
+    sql`select * from question_stats`,
+  );
   const byId = new Map(stats.map((s) => [num(s.question_id), s]));
   return [...bank.byId.values()]
     .map((q) => {
@@ -217,7 +236,10 @@ export async function featurePanel(): Promise<FeatureRow[]> {
   const out: FeatureRow[] = [];
   for (const [key, cfg] of Object.entries(FEATURE_DECISIONS) as [FeatureKey, (typeof FEATURE_DECISIONS)[FeatureKey]][]) {
     const [stated] = await rows<{ n: number; hits: number }>(sql`
-      select count(*) n, count(*) filter (where o.key in (${sql.join(cfg.stated.optionKeys.map((k) => sql`${k}`), sql`, `)})) hits
+      select count(*) n, count(*) filter (where o.key in (${sql.join(
+        cfg.stated.optionKeys.map((k) => sql`${k}`),
+        sql`, `,
+      )})) hits
       from quiz_questions qq join quizzes z on z.id = qq.quiz_id and z.status = 'live'
       join questions q on q.id = qq.question_id join options o on o.id = qq.creator_option_id
       where q.key = ${cfg.stated.questionKey}`);

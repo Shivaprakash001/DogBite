@@ -16,7 +16,7 @@ export function SoundToggle() {
       }}
       aria-pressed={enabled}
       aria-label={enabled ? copy.common.soundOn : copy.common.soundOff}
-      className="flex size-11 items-center justify-center rounded-full bg-paper text-lg ring-2 ring-line"
+      className="bg-paper ring-line flex size-11 items-center justify-center rounded-full text-lg ring-2"
     >
       <span aria-hidden>{enabled ? '🔊' : '🔇'}</span>
     </button>

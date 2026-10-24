@@ -15,7 +15,7 @@ export function DeleteQuizButton({ slug, after = 'home' }: { slug: string; after
     <button
       type="button"
       disabled={busy}
-      className="mx-auto min-h-11 px-4 text-sm font-semibold text-wrong underline underline-offset-4"
+      className="text-wrong mx-auto min-h-11 px-4 text-sm font-semibold underline underline-offset-4"
       onClick={async () => {
         if (!window.confirm(copy.done.deleteConfirm)) return;
         setBusy(true);

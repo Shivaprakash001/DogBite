@@ -12,10 +12,8 @@ const base =
 const variants: Record<ButtonVariant, string> = {
   primary:
     'bg-terracotta text-white shadow-chunky hover:bg-clay active:translate-y-[5px] active:shadow-none disabled:active:translate-y-0 disabled:active:shadow-chunky',
-  secondary:
-    'bg-paper text-charcoal ring-2 ring-line shadow-chunky-light hover:bg-white active:translate-y-[5px] active:shadow-none',
-  accent:
-    'bg-marigold text-charcoal shadow-chunky-marigold hover:brightness-105 active:translate-y-[5px] active:shadow-none',
+  secondary: 'bg-paper text-charcoal ring-2 ring-line shadow-chunky-light hover:bg-white active:translate-y-[5px] active:shadow-none',
+  accent: 'bg-marigold text-charcoal shadow-chunky-marigold hover:brightness-105 active:translate-y-[5px] active:shadow-none',
   ghost: 'bg-transparent text-terracotta underline-offset-4 hover:underline min-h-11',
 };
 

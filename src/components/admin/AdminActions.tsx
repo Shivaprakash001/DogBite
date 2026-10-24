@@ -6,7 +6,19 @@ import { useToast } from '@/components/ui/Toast';
 import { ApiClientError, api } from '@/lib/api-client';
 
 /** Posts one admin action, then refreshes the server-rendered dashboard. */
-export function AdminAction({ action, body, children, confirm, tone = 'default' }: { action: string; body: unknown; children: ReactNode; confirm?: string; tone?: 'default' | 'danger' }) {
+export function AdminAction({
+  action,
+  body,
+  children,
+  confirm,
+  tone = 'default',
+}: {
+  action: string;
+  body: unknown;
+  children: ReactNode;
+  confirm?: string;
+  tone?: 'default' | 'danger';
+}) {
   const router = useRouter();
   const toast = useToast();
   const [busy, setBusy] = useState(false);
@@ -65,14 +77,18 @@ export function AdminLogin() {
         autoComplete="current-password"
         value={key}
         onChange={(e) => setKey(e.target.value)}
-        className="h-12 rounded-xl bg-paper px-4 ring-2 ring-line outline-none focus:ring-4 focus:ring-terracotta"
+        className="bg-paper ring-line focus:ring-terracotta h-12 rounded-xl px-4 ring-2 outline-none focus:ring-4"
       />
       {error && (
-        <p role="alert" className="font-semibold text-wrong">
+        <p role="alert" className="text-wrong font-semibold">
           {error}
         </p>
       )}
-      <button type="submit" disabled={busy || !key} className="min-h-12 rounded-chunky bg-terracotta font-display font-extrabold text-white shadow-chunky disabled:opacity-50">
+      <button
+        type="submit"
+        disabled={busy || !key}
+        className="rounded-chunky bg-terracotta font-display shadow-chunky min-h-12 font-extrabold text-white disabled:opacity-50"
+      >
         Sign in
       </button>
     </form>

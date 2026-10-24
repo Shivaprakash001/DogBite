@@ -36,7 +36,7 @@ async function BoardInner({ params }: { params: PageProps<'/q/[slug]/board'>['pa
         <Mascot mood={rows.length ? 'happy' : 'sleepy'} gender={quiz.gender} size={84} />
         <div>
           <h1 className="text-2xl leading-tight font-extrabold">{fmt(copy.board.title, { creator: quiz.creatorName })}</h1>
-          <p className="text-sm font-semibold text-ink-soft">{fmt(copy.hostelPage.players, { n: rows.length })}</p>
+          <p className="text-ink-soft text-sm font-semibold">{fmt(copy.hostelPage.players, { n: rows.length })}</p>
         </div>
       </section>
       <div className="mt-5">

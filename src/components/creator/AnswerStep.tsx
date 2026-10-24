@@ -36,11 +36,11 @@ export function AnswerStep({ question, answered, total, busy, onAnswer, onSkip }
     <section className="flex flex-1 flex-col gap-5 pt-1" aria-labelledby="answer-q">
       <ProgressBar value={answered} max={total} label={fmt(copy.creator.answerProgress, { n: Math.min(answered + 1, total) })} />
       <div>
-        <p className="font-display text-sm font-bold text-terracotta">{copy.creator.answerTitle}</p>
+        <p className="font-display text-terracotta text-sm font-bold">{copy.creator.answerTitle}</p>
         <h1 id="answer-q" className="mt-1 text-[1.6rem] leading-tight font-extrabold">
           {question.text}
         </h1>
-        <p className="mt-1 text-sm text-ink-soft">{copy.creator.answerHint}</p>
+        <p className="text-ink-soft mt-1 text-sm">{copy.creator.answerHint}</p>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {question.options.map((o, i) => (
@@ -66,7 +66,7 @@ export function AnswerStep({ question, answered, total, busy, onAnswer, onSkip }
         type="button"
         onClick={onSkip}
         disabled={busy || chosen !== null}
-        className="mx-auto mt-auto min-h-11 rounded-full px-5 font-display font-bold text-ink-soft underline underline-offset-4 disabled:opacity-40"
+        className="font-display text-ink-soft mx-auto mt-auto min-h-11 rounded-full px-5 font-bold underline underline-offset-4 disabled:opacity-40"
       >
         🔄 {copy.creator.skipQuestion}
       </button>

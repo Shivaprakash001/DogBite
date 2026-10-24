@@ -53,9 +53,12 @@ async function QuizLanding({ params }: { params: PageProps<'/q/[slug]'>['params'
           <Sticker emoji="🚫" size={40} rotate={12} className="-right-8 bottom-8" />
         </div>
         <h1 className="mt-3 text-[2.4rem] leading-[1.05] font-extrabold text-balance">{fmt(copy.quizLanding.title, { creator: quiz.creatorName })}</h1>
-        <p className="mt-3 max-w-[32ch] text-lg text-ink-soft">{fmt(copy.quizLanding.sub, { creator: quiz.creatorName })}</p>
+        <p className="text-ink-soft mt-3 max-w-[32ch] text-lg">{fmt(copy.quizLanding.sub, { creator: quiz.creatorName })}</p>
         {quiz.hostel && (
-          <Link href={paths.hostel(quiz.hostel.slug)} className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-paper px-4 font-display text-sm font-bold ring-2 ring-line">
+          <Link
+            href={paths.hostel(quiz.hostel.slug)}
+            className="bg-paper font-display ring-line mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-bold ring-2"
+          >
             🏠 {quiz.hostel.name} · {quiz.hostel.area}
           </Link>
         )}
@@ -72,7 +75,7 @@ async function QuizLanding({ params }: { params: PageProps<'/q/[slug]'>['params'
         ) : status.best ? (
           <>
             <Card tone="latte">
-              <p className="text-center font-display text-lg font-extrabold">{fmt(copy.quizLanding.playedAlready, { score: status.best.score })}</p>
+              <p className="font-display text-center text-lg font-extrabold">{fmt(copy.quizLanding.playedAlready, { score: status.best.score })}</p>
             </Card>
             <ButtonLink href={paths.result(slug, status.best.id)} size="lg">
               {copy.quizLanding.viewResult}
@@ -95,11 +98,11 @@ async function QuizLanding({ params }: { params: PageProps<'/q/[slug]'>['params'
           <h2 id="board-title" className="text-xl font-extrabold">
             {copy.quizLanding.boardTitle}
           </h2>
-          <span className="text-sm font-semibold text-ink-soft">{fmt(copy.hostelPage.players, { n: plays })}</span>
+          <span className="text-ink-soft text-sm font-semibold">{fmt(copy.hostelPage.players, { n: plays })}</span>
         </div>
         <ScoreList rows={board} emptyText={copy.quizLanding.boardEmpty} highlightAttemptIds={status.attempts.map((a) => a.id)} />
         {board.length > 0 && (
-          <Link href={paths.board(slug)} className="mt-2 inline-block min-h-11 py-3 font-display font-bold text-terracotta underline underline-offset-4">
+          <Link href={paths.board(slug)} className="font-display text-terracotta mt-2 inline-block min-h-11 py-3 font-bold underline underline-offset-4">
             {copy.result.viewBoard} →
           </Link>
         )}

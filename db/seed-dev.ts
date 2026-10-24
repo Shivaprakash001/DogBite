@@ -40,7 +40,32 @@ const HOSTELS: { name: string; area: string; type: 'boys' | 'girls' | 'coed' }[]
   { name: 'Sai Krupa Hostel (dev)', area: 'Ameerpet', type: 'boys' },
   { name: 'Lotus Ladies PG (dev)', area: 'Ameerpet', type: 'girls' },
 ];
-const NAMES = ['Ravi', 'Priya', 'Arjun', 'Sneha', 'Kiran', 'Divya', 'Rahul', 'Anjali', 'Vamsi', 'Pooja', 'Teja', 'Keerthi', 'Sai', 'Harika', 'Nikhil', 'Bhavana', 'Rohit', 'Swathi', 'Manoj', 'Lavanya', 'Abhi', 'Meghana', 'Charan', 'Sravya'];
+const NAMES = [
+  'Ravi',
+  'Priya',
+  'Arjun',
+  'Sneha',
+  'Kiran',
+  'Divya',
+  'Rahul',
+  'Anjali',
+  'Vamsi',
+  'Pooja',
+  'Teja',
+  'Keerthi',
+  'Sai',
+  'Harika',
+  'Nikhil',
+  'Bhavana',
+  'Rohit',
+  'Swathi',
+  'Manoj',
+  'Lavanya',
+  'Abhi',
+  'Meghana',
+  'Charan',
+  'Sravya',
+];
 
 async function reset() {
   const sessions = await db.select({ id: schema.sessions.id }).from(schema.sessions).where(eq(schema.sessions.utm, TAG));
@@ -48,7 +73,17 @@ async function reset() {
   if (sids.length) {
     const creators = await db.select({ id: schema.creators.id }).from(schema.creators).where(inArray(schema.creators.sessionId, sids));
     const quizIds = creators.length
-      ? (await db.select({ id: schema.quizzes.id }).from(schema.quizzes).where(inArray(schema.quizzes.creatorId, creators.map((c) => c.id)))).map((q) => q.id)
+      ? (
+          await db
+            .select({ id: schema.quizzes.id })
+            .from(schema.quizzes)
+            .where(
+              inArray(
+                schema.quizzes.creatorId,
+                creators.map((c) => c.id),
+              ),
+            )
+        ).map((q) => q.id)
       : [];
     if (quizIds.length) {
       await db.delete(schema.attempts).where(inArray(schema.attempts.quizId, quizIds));
@@ -89,7 +124,13 @@ async function newSession(createdAt: Date, refSessionId: string | null = null) {
   return id;
 }
 
-const ev = (sessionId: string, name: string, props: Record<string, string | number | boolean | null>, createdAt: Date) => ({ sessionId, name, props, createdAt, page: '/' });
+const ev = (sessionId: string, name: string, props: Record<string, string | number | boolean | null>, createdAt: Date) => ({
+  sessionId,
+  name,
+  props,
+  createdAt,
+  page: '/',
+});
 
 async function seed() {
   await reset();
@@ -104,14 +145,33 @@ async function seed() {
   for (const h of HOSTELS) {
     const [row] = await db
       .insert(schema.hostels)
-      .values({ slug: slugify(`${h.name} ${h.area}`), name: h.name, nameNormalized: normalizeHostelName(h.name), area: h.area, areaSlug: slugifyArea(h.area), city: 'Hyderabad', type: h.type })
+      .values({
+        slug: slugify(`${h.name} ${h.area}`),
+        name: h.name,
+        nameNormalized: normalizeHostelName(h.name),
+        area: h.area,
+        areaSlug: slugifyArea(h.area),
+        city: 'Hyderabad',
+        type: h.type,
+      })
       .returning();
     hostelRows.push(row);
   }
 
   const pool: PoolQuestion[] = QUESTION_BANK.map((q) => ({
-    key: q.key, objective_tag: q.objective_tag, kind: q.kind, segment: q.segment, fun_score: q.fun_score, data_value: q.data_value,
-    sensitivity: q.sensitivity, active: true, optionKeys: q.options.map((o) => o.key), successes: 0, failures: 0, impressions: 0, skips: 0,
+    key: q.key,
+    objective_tag: q.objective_tag,
+    kind: q.kind,
+    segment: q.segment,
+    fun_score: q.fun_score,
+    data_value: q.data_value,
+    sensitivity: q.sensitivity,
+    active: true,
+    optionKeys: q.options.map((o) => o.key),
+    successes: 0,
+    failures: 0,
+    impressions: 0,
+    skips: 0,
   }));
 
   const events: ReturnType<typeof ev>[] = [];
@@ -124,19 +184,37 @@ async function seed() {
       const created = minutesAgo(Math.floor(rng() * 60 * 24 * 6));
       const sid = await newSession(created);
       const gender = pick(['he', 'she', 'they'] as const);
-      const [creator] = await db.insert(schema.creators).values({ sessionId: sid, displayName: pick(NAMES), gender, hostelId: hostel.id, hostelDecided: true, createdAt: created }).returning();
+      const [creator] = await db
+        .insert(schema.creators)
+        .values({ sessionId: sid, displayName: pick(NAMES), gender, hostelId: hostel.id, hostelDecided: true, createdAt: created })
+        .returning();
       const segment = hostel.type === 'unknown' ? null : hostel.type;
       const candidates = buildCandidates(pool, { segment, excludeKeys: new Set(), coverage: {}, rng });
       const chosen: typeof candidates = [];
       // Bias picks toward research questions so report cards unlock in dev.
-      for (const q of [...candidates.filter((x) => x.kind !== 'fun'), ...shuffle(candidates.filter((x) => x.kind === 'fun'), rng)]) {
+      for (const q of [
+        ...candidates.filter((x) => x.kind !== 'fun'),
+        ...shuffle(
+          candidates.filter((x) => x.kind === 'fun'),
+          rng,
+        ),
+      ]) {
         if (chosen.length === 10) break;
         if (canAdd(chosen, q) === null) chosen.push(q);
       }
       const slug = `${slugify(creator.displayName)}-dev${quizzes}`;
       const [quiz] = await db
         .insert(schema.quizzes)
-        .values({ slug, creatorId: creator.id, status: 'live', createdAt: created, publishedAt: new Date(created.getTime() + 100_000), picksConfirmedAt: created, candidateKeys: candidates.map((q) => q.key), shownKeys: candidates.map((q) => q.key) })
+        .values({
+          slug,
+          creatorId: creator.id,
+          status: 'live',
+          createdAt: created,
+          publishedAt: new Date(created.getTime() + 100_000),
+          picksConfirmedAt: created,
+          candidateKeys: candidates.map((q) => q.key),
+          shownKeys: candidates.map((q) => q.key),
+        })
         .returning();
       quizzes++;
       const qqRows = [];
@@ -145,7 +223,10 @@ async function seed() {
         const options = optsByQ.get(row.id)!;
         // Skew answers a little per hostel so aggregates differ between hostels.
         const option = rng() < 0.45 ? options[hi % options.length] : pick(options);
-        const [qq] = await db.insert(schema.quizQuestions).values({ quizId: quiz.id, questionId: row.id, position, creatorOptionId: option.id, answerMs: 1500 + Math.floor(rng() * 6000) }).returning();
+        const [qq] = await db
+          .insert(schema.quizQuestions)
+          .values({ quizId: quiz.id, questionId: row.id, position, creatorOptionId: option.id, answerMs: 1500 + Math.floor(rng() * 6000) })
+          .returning();
         qqRows.push({ qq, options });
         events.push(ev(sid, 'creator_answer', { question_key: q.key, option_key: option.key, ms: qq.answerMs }, created));
       }
@@ -155,7 +236,15 @@ async function seed() {
         ev(sid, 'landing_view', { utm: null }, created),
         ev(sid, 'start_click', { quiz_slug: null }, created),
         ev(sid, 'create_start', { resumed: false }, created),
-        ev(sid, 'quiz_publish', { total_ms: 95_000 + Math.floor(rng() * 60_000), research_count: chosen.filter((q) => (RESEARCH_TAGS as readonly string[]).includes(q.objective_tag)).length }, created),
+        ev(
+          sid,
+          'quiz_publish',
+          {
+            total_ms: 95_000 + Math.floor(rng() * 60_000),
+            research_count: chosen.filter((q) => (RESEARCH_TAGS as readonly string[]).includes(q.objective_tag)).length,
+          },
+          created,
+        ),
         ev(sid, 'share_click', { channel: pick(['whatsapp', 'whatsapp', 'copy', 'native']), quiz_id: quiz.id, hostel_id: hostel.id }, created),
       );
       await db.insert(schema.shares).values({ sessionId: sid, quizId: quiz.id, hostelId: hostel.id, channel: 'whatsapp', createdAt: created });
@@ -166,8 +255,15 @@ async function seed() {
         const psid = await newSession(at, sid);
         const sameHostel = rng() < 0.7;
         const playerHostel = sameHostel ? hostel : pick(hostelRows);
-        const [attempt] = await db.insert(schema.attempts).values({ quizId: quiz.id, sessionId: psid, playerName: pick(NAMES), hostelId: rng() < 0.85 ? playerHostel.id : null, startedAt: at }).returning();
-        events.push(ev(psid, 'share_open', { quiz_slug: slug }, at), ev(psid, 'landing_view', { utm: null }, at), ev(psid, 'start_click', { quiz_slug: slug }, at));
+        const [attempt] = await db
+          .insert(schema.attempts)
+          .values({ quizId: quiz.id, sessionId: psid, playerName: pick(NAMES), hostelId: rng() < 0.85 ? playerHostel.id : null, startedAt: at })
+          .returning();
+        events.push(
+          ev(psid, 'share_open', { quiz_slug: slug }, at),
+          ev(psid, 'landing_view', { utm: null }, at),
+          ev(psid, 'start_click', { quiz_slug: slug }, at),
+        );
         const abandons = rng() < 0.12;
         let score = 0;
         let total = 0;
@@ -176,26 +272,39 @@ async function seed() {
             events.push(ev(psid, 'quiz_abandon', { last_position: 4, quiz_id: quiz.id }, at));
             break;
           }
-          const shown = pickShownOptions(attempt.id, qq.id, qq.creatorOptionId!, options.map((o) => o.id));
+          const shown = pickShownOptions(
+            attempt.id,
+            qq.id,
+            qq.creatorOptionId!,
+            options.map((o) => o.id),
+          );
           const knows = sameHostel ? 0.72 : 0.55;
           const chosenId = rng() < knows ? qq.creatorOptionId! : shown.find((id) => id !== qq.creatorOptionId)!;
           const correct = chosenId === qq.creatorOptionId;
           const ms = 1200 + Math.floor(rng() * 5000);
           score += correct ? 1 : 0;
           total += ms;
-          await db.insert(schema.attemptAnswers).values({ attemptId: attempt.id, quizQuestionId: qq.id, shownOptionIds: shown, chosenOptionId: chosenId, isCorrect: correct, msToAnswer: ms });
+          await db
+            .insert(schema.attemptAnswers)
+            .values({ attemptId: attempt.id, quizQuestionId: qq.id, shownOptionIds: shown, chosenOptionId: chosenId, isCorrect: correct, msToAnswer: ms });
           const opt = options.find((o) => o.id === chosenId)!;
           events.push(ev(psid, 'answer_submit', { question_key: qById.get(qq.questionId)!.key, option_key: opt.key, ms_to_answer: ms, correct }, at));
         }
         if (!abandons) {
-          await db.update(schema.attempts).set({ score, totalMs: total, finishedAt: new Date(at.getTime() + total) }).where(eq(schema.attempts.id, attempt.id));
+          await db
+            .update(schema.attempts)
+            .set({ score, totalMs: total, finishedAt: new Date(at.getTime() + total) })
+            .where(eq(schema.attempts.id, attempt.id));
           plays++;
           events.push(ev(psid, 'quiz_complete', { score, total_ms: total }, at), ev(psid, 'result_view', { score, tier: 'x' }, at));
           const feature = pick(['gym_buddy', 'mess_tracker', 'laundry_reminders', 'rent_reminders']);
           events.push(ev(psid, 'teaser_view', { feature_key: feature }, at));
           if (rng() < 0.22) {
             events.push(ev(psid, 'teaser_tap', { feature_key: feature }, at));
-            await db.insert(schema.waitlistTaps).values({ sessionId: psid, featureKey: feature, hostelId: attempt.hostelId, createdAt: at }).onConflictDoNothing();
+            await db
+              .insert(schema.waitlistTaps)
+              .values({ sessionId: psid, featureKey: feature, hostelId: attempt.hostelId, createdAt: at })
+              .onConflictDoNothing();
           }
           if (rng() < 0.3) events.push(ev(psid, 'create_start', { resumed: false }, at));
         }

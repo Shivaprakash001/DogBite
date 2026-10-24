@@ -166,7 +166,10 @@ export async function flagHostel(hostelId: string, sid: string): Promise<void> {
     .from(schema.hostelFlags)
     .where(eq(schema.hostelFlags.hostelId, hostelId));
   if (n >= AUTO_HIDE_FLAGS) {
-    await db().update(schema.hostels).set({ hidden: true }).where(and(eq(schema.hostels.id, hostelId), ne(schema.hostels.status, 'verified')));
+    await db()
+      .update(schema.hostels)
+      .set({ hidden: true })
+      .where(and(eq(schema.hostels.id, hostelId), ne(schema.hostels.status, 'verified')));
   }
 }
 

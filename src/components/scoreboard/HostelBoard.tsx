@@ -7,19 +7,22 @@ import { RankBadge } from './RankBadge';
 export function HostelBoard({ hostels, emptyText, showArea = true }: { hostels: RankedHostel[]; emptyText: string; showArea?: boolean }) {
   const copy = getCopy();
   if (hostels.length === 0) {
-    return <p className="rounded-2xl bg-paper/70 px-4 py-5 text-center text-ink-soft ring-2 ring-line ring-dashed">{emptyText}</p>;
+    return <p className="bg-paper/70 text-ink-soft ring-line ring-dashed rounded-2xl px-4 py-5 text-center ring-2">{emptyText}</p>;
   }
   return (
     <ol className="flex flex-col gap-2">
       {hostels.map((h) => (
         <li key={h.id}>
-          <Link href={paths.hostel(h.slug)} className="flex min-h-14 items-center gap-3 rounded-2xl bg-paper px-3 py-2.5 ring-2 ring-line transition hover:ring-terracotta">
+          <Link
+            href={paths.hostel(h.slug)}
+            className="bg-paper ring-line hover:ring-terracotta flex min-h-14 items-center gap-3 rounded-2xl px-3 py-2.5 ring-2 transition"
+          >
             <RankBadge rank={h.rank} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate font-display font-extrabold">{h.name}</span>
-              {showArea && <span className="block truncate text-sm text-ink-soft">{h.area}</span>}
+              <span className="font-display block truncate font-extrabold">{h.name}</span>
+              {showArea && <span className="text-ink-soft block truncate text-sm">{h.area}</span>}
             </span>
-            <span className="shrink-0 font-display text-sm font-extrabold text-terracotta tabular-nums">{fmt(copy.faceoff.points, { n: h.points })}</span>
+            <span className="font-display text-terracotta shrink-0 text-sm font-extrabold tabular-nums">{fmt(copy.faceoff.points, { n: h.points })}</span>
           </Link>
         </li>
       ))}

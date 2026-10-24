@@ -57,9 +57,7 @@ export async function getScoreboard(quizId: string, limit = 50): Promise<(BoardR
     .from(schema.attempts)
     .leftJoin(schema.hostels, eq(schema.hostels.id, schema.attempts.hostelId))
     .where(and(eq(schema.attempts.quizId, quizId), isNotNull(schema.attempts.finishedAt)));
-  return rankScoreboard(
-    rows.map((r) => ({ ...r, score: r.score ?? 0, totalMs: r.totalMs ?? 0, finishedAt: r.finishedAt! })),
-  ).slice(0, limit);
+  return rankScoreboard(rows.map((r) => ({ ...r, score: r.score ?? 0, totalMs: r.totalMs ?? 0, finishedAt: r.finishedAt! }))).slice(0, limit);
 }
 
 export interface PlayerStatus {
@@ -78,17 +76,19 @@ export async function playerStatus(quizId: string, sid: string | null): Promise<
     .orderBy(asc(schema.attempts.startedAt));
   const attempts = rows.map((r) => ({ id: r.id, score: r.score, finished: !!r.finishedAt }));
   const finished = attempts.filter((a) => a.finished);
-  const best = finished.reduce<{ id: string; score: number } | null>(
-    (b, a) => (!b || (a.score ?? 0) > b.score ? { id: a.id, score: a.score ?? 0 } : b),
-    null,
-  );
+  const best = finished.reduce<{ id: string; score: number } | null>((b, a) => (!b || (a.score ?? 0) > b.score ? { id: a.id, score: a.score ?? 0 } : b), null);
   const unfinished = attempts.find((a) => !a.finished) ?? null;
   return { attempts, best, canStart: !!unfinished || attempts.length < QUIZ.maxAttemptsPerPlayer, unfinishedId: unfinished?.id ?? null };
 }
 
 async function quizQuestionsWithKey(quizId: string) {
   return db()
-    .select({ id: schema.quizQuestions.id, position: schema.quizQuestions.position, questionId: schema.quizQuestions.questionId, creatorOptionId: schema.quizQuestions.creatorOptionId })
+    .select({
+      id: schema.quizQuestions.id,
+      position: schema.quizQuestions.position,
+      questionId: schema.quizQuestions.questionId,
+      creatorOptionId: schema.quizQuestions.creatorOptionId,
+    })
     .from(schema.quizQuestions)
     .where(eq(schema.quizQuestions.quizId, quizId))
     .orderBy(asc(schema.quizQuestions.position));
@@ -99,12 +99,23 @@ async function buildAttemptPayload(attemptId: string, quiz: PublicQuiz): Promise
   const qqs = await quizQuestionsWithKey(quiz.id);
   const questions: PlayQuestionDTO[] = qqs.map((qq) => {
     const q = bank.byId.get(qq.questionId)!;
-    const [a, b] = pickShownOptions(attemptId, qq.id, qq.creatorOptionId!, q.options.map((o) => o.id));
+    const [a, b] = pickShownOptions(
+      attemptId,
+      qq.id,
+      qq.creatorOptionId!,
+      q.options.map((o) => o.id),
+    );
     const dto = (id: number) => {
       const o = q.options.find((x) => x.id === id)!;
       return { id: o.id, key: o.key, label: o.label, emoji: o.emoji, image: o.imageAsset };
     };
-    return { quizQuestionId: qq.id, position: qq.position, key: q.key, text: renderQuestionText(q.textTemplate, quiz.creatorName, quiz.gender), options: [dto(a), dto(b)] };
+    return {
+      quizQuestionId: qq.id,
+      position: qq.position,
+      key: q.key,
+      text: renderQuestionText(q.textTemplate, quiz.creatorName, quiz.gender),
+      options: [dto(a), dto(b)],
+    };
   });
   const answers = await db().select().from(schema.attemptAnswers).where(eq(schema.attemptAnswers.attemptId, attemptId));
   const keyById = new Map(qqs.map((qq) => [qq.id, qq.creatorOptionId!]));
@@ -132,7 +143,14 @@ export async function startAttempt(
 
   const [attempt] = await db()
     .insert(schema.attempts)
-    .values({ quizId: quiz.id, sessionId: sid, playerName: input.playerName, hostelId: input.hostelId, hostelSkipped: input.hostelSkipped, device: input.device })
+    .values({
+      quizId: quiz.id,
+      sessionId: sid,
+      playerName: input.playerName,
+      hostelId: input.hostelId,
+      hostelSkipped: input.hostelSkipped,
+      device: input.device,
+    })
     .returning({ id: schema.attempts.id });
   return buildAttemptPayload(attempt.id, quiz);
 }
@@ -148,7 +166,10 @@ export async function resumeAttempt(sid: string, attemptId: string): Promise<Att
 }
 
 async function ownedAttempt(sid: string, attemptId: string) {
-  const [attempt] = await db().select().from(schema.attempts).where(and(eq(schema.attempts.id, attemptId), eq(schema.attempts.sessionId, sid)));
+  const [attempt] = await db()
+    .select()
+    .from(schema.attempts)
+    .where(and(eq(schema.attempts.id, attemptId), eq(schema.attempts.sessionId, sid)));
   if (!attempt) throw new ApiError(404, 'attempt_not_found');
   return attempt;
 }
@@ -171,7 +192,12 @@ export async function submitAnswer(sid: string, attemptId: string, quizQuestionI
 
   const bank = await loadBank();
   const q = bank.byId.get(qq.questionId)!;
-  const shown = pickShownOptions(attemptId, qq.id, qq.creatorOptionId, q.options.map((o) => o.id));
+  const shown = pickShownOptions(
+    attemptId,
+    qq.id,
+    qq.creatorOptionId,
+    q.options.map((o) => o.id),
+  );
   if (optionId !== null && !shown.includes(optionId)) throw new ApiError(400, 'invalid_option');
   const correct = optionId === qq.creatorOptionId;
   const msClamped = Math.min(Math.max(0, Math.round(ms)), 600_000);

@@ -122,9 +122,7 @@ describe('buildCandidates', () => {
       return gym;
     };
     const saturated = { gym: 100_000 };
-    expect(tally({ laundry: 100_000, rent: 100_000, wtp: 100_000, nutrition: 100_000, mess: 100_000, pain_points: 100_000 })).toBeGreaterThan(
-      tally(saturated),
-    );
+    expect(tally({ laundry: 100_000, rent: 100_000, wtp: 100_000, nutrition: 100_000, mess: 100_000, pain_points: 100_000 })).toBeGreaterThan(tally(saturated));
   });
 
   it('learns from the bandit: a question that keeps failing appears less often', () => {
@@ -168,7 +166,12 @@ describe('composition rules', () => {
   });
 
   it('pickReplacement keeps caps and prefers the same kind', () => {
-    const quiz = [...fun(6).map((f, i) => ({ ...f, key: pool.filter((q) => q.kind === 'fun')[i].key })), item('q_gym_week', 'gym', 'research'), item('q_rent_day', 'rent', 'research'), item('q_laundry_routine', 'laundry', 'research')];
+    const quiz = [
+      ...fun(6).map((f, i) => ({ ...f, key: pool.filter((q) => q.kind === 'fun')[i].key })),
+      item('q_gym_week', 'gym', 'research'),
+      item('q_rent_day', 'rent', 'research'),
+      item('q_laundry_routine', 'laundry', 'research'),
+    ];
     const exclude = new Set(quiz.map((q) => q.key).concat('q_alarm'));
     const rep = pickReplacement(pool, ctx({ excludeKeys: exclude }), quiz, item('q_alarm', 'sleep', 'fun'));
     expect(rep).not.toBeNull();

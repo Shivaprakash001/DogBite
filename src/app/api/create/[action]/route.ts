@@ -2,18 +2,12 @@ import { z } from 'zod';
 import { QUIZ } from '@/config';
 import { validateDisplayName } from '@/lib/moderation';
 import { ApiError, guardWrite, limit, ok, parseBody, route } from '@/server/http';
-import {
-  answerQuestion,
-  confirmPicks,
-  publishDraft,
-  setHostel,
-  setMascot,
-  shuffleCandidates,
-  skipQuestion,
-  startDraft,
-} from '@/server/repos/creator';
+import { answerQuestion, confirmPicks, publishDraft, setHostel, setMascot, shuffleCandidates, skipQuestion, startDraft } from '@/server/repos/creator';
 
-const key = z.string().regex(/^q_[a-z0-9_]+$/).max(60);
+const key = z
+  .string()
+  .regex(/^q_[a-z0-9_]+$/)
+  .max(60);
 
 const schemas = {
   start: z.object({ name: z.string().max(40) }),

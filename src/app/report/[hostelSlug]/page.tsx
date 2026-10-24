@@ -43,13 +43,13 @@ function Section({ title, section, emptyText }: { title: string; section: Report
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="text-lg font-extrabold">{title}</h2>
         {section.average != null && (
-          <span className="font-display text-xl font-extrabold text-terracotta">
+          <span className="font-display text-terracotta text-xl font-extrabold">
             {section.average}
-            <span className="text-sm text-ink-soft">/5 ★</span>
+            <span className="text-ink-soft text-sm">/5 ★</span>
           </span>
         )}
       </div>
-      <div className="mt-3">{section.shares ? <ShareBars bars={section.shares} /> : <p className="text-sm text-ink-soft">🔒 {emptyText}</p>}</div>
+      <div className="mt-3">{section.shares ? <ShareBars bars={section.shares} /> : <p className="text-ink-soft text-sm">🔒 {emptyText}</p>}</div>
     </Card>
   );
 }
@@ -63,7 +63,9 @@ async function ReportInner({ params, searchParams }: Props) {
   if (!hostel || hostel.hidden) notFound();
   const [report, gate] = await Promise.all([reportCard(hostel), currentGate()]);
   const ownerSignup = env().OWNER_SIGNUP_URL;
-  const ownerHref = ownerSignup ? `${ownerSignup}${ownerSignup.includes('?') ? '&' : '?'}utm_source=quiz&utm_medium=report&hostel=${encodeURIComponent(hostel.slug)}` : null;
+  const ownerHref = ownerSignup
+    ? `${ownerSignup}${ownerSignup.includes('?') ? '&' : '?'}utm_source=quiz&utm_medium=report&hostel=${encodeURIComponent(hostel.slug)}`
+    : null;
   const ownerLink = absoluteUrl(paths.report(hostel.slug), { v: 'owner', ref: gate.shareRef });
   const sectionLocked = fmt(copy.report.sectionLocked, { k: PRIVACY.minRespondents });
 
@@ -84,7 +86,7 @@ async function ReportInner({ params, searchParams }: Props) {
         <Mascot mood={report.unlocked ? 'happy' : 'sleepy'} size={88} />
         <div className="min-w-0">
           <h1 className="text-[1.65rem] leading-tight font-extrabold">{fmt(copy.report.title, { hostel: hostel.name })}</h1>
-          <p className="text-sm text-ink-soft">{copy.report.sub}</p>
+          <p className="text-ink-soft text-sm">{copy.report.sub}</p>
         </div>
       </section>
 
@@ -92,19 +94,29 @@ async function ReportInner({ params, searchParams }: Props) {
 
       {report.unlocked ? (
         <div className="mt-5 flex flex-col gap-3">
-          <p className="font-display text-sm font-bold text-ink-soft">{fmt(copy.report.respondents, { n: report.respondents })}</p>
+          <p className="font-display text-ink-soft text-sm font-bold">{fmt(copy.report.respondents, { n: report.respondents })}</p>
           <Section title={copy.report.mess} section={report.sections.mess} emptyText={sectionLocked} />
           <Section title={copy.report.painPoints} section={report.sections.painPoints} emptyText={sectionLocked} />
           <Section title={copy.report.wifi} section={report.sections.wifi} emptyText={sectionLocked} />
           <Section title={copy.report.wishList} section={report.sections.wishList} emptyText={sectionLocked} />
           <Section title={copy.report.laundry} section={report.sections.laundry} emptyText={sectionLocked} />
-          <p className="text-xs text-ink-soft">{copy.report.sampleNote}</p>
+          <p className="text-ink-soft text-xs">{copy.report.sampleNote}</p>
         </div>
       ) : (
         <Card className="mt-5">
-          <p className="text-center font-display text-lg font-extrabold">🔒 {fmt(copy.report.locked, { n: report.respondents, k: PRIVACY.minRespondents })}</p>
-          <div className="mt-3 h-3 overflow-hidden rounded-full bg-sand" role="progressbar" aria-valuemin={0} aria-valuemax={PRIVACY.minRespondents} aria-valuenow={report.respondents} aria-label={copy.report.title}>
-            <div className="h-full rounded-full bg-terracotta" style={{ width: `${(Math.min(report.respondents, PRIVACY.minRespondents) / PRIVACY.minRespondents) * 100}%` }} />
+          <p className="font-display text-center text-lg font-extrabold">🔒 {fmt(copy.report.locked, { n: report.respondents, k: PRIVACY.minRespondents })}</p>
+          <div
+            className="bg-sand mt-3 h-3 overflow-hidden rounded-full"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={PRIVACY.minRespondents}
+            aria-valuenow={report.respondents}
+            aria-label={copy.report.title}
+          >
+            <div
+              className="bg-terracotta h-full rounded-full"
+              style={{ width: `${(Math.min(report.respondents, PRIVACY.minRespondents) / PRIVACY.minRespondents) * 100}%` }}
+            />
           </div>
           <ButtonLink href={`/create?hostel=${hostel.slug}`} size="lg" className="mt-4">
             ✍️ {copy.hostelPage.playCta}
@@ -121,7 +133,10 @@ async function ReportInner({ params, searchParams }: Props) {
 
       {!ownerView && ownerCta && <div className="mt-6">{ownerCta}</div>}
 
-      <Link href={paths.hostel(hostel.slug)} className="mt-4 block min-h-11 py-3 text-center font-display font-bold text-terracotta underline underline-offset-4">
+      <Link
+        href={paths.hostel(hostel.slug)}
+        className="font-display text-terracotta mt-4 block min-h-11 py-3 text-center font-bold underline underline-offset-4"
+      >
         ← {hostel.name}
       </Link>
       <Footer />

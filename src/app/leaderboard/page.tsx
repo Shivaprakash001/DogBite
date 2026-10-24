@@ -40,7 +40,11 @@ async function Boards() {
       {areas.length > 0 && (
         <nav className="no-scrollbar -mx-4 mt-5 flex gap-2 overflow-x-auto px-4" aria-label={copy.faceoff.areaPicker}>
           {areas.map((a) => (
-            <Link key={`${a.city}-${a.areaSlug}`} href={`${paths.leaderboard(a.areaSlug)}?city=${encodeURIComponent(a.city)}`} className="min-h-11 shrink-0 rounded-full bg-paper px-4 py-2.5 font-display text-sm font-bold ring-2 ring-line hover:ring-terracotta">
+            <Link
+              key={`${a.city}-${a.areaSlug}`}
+              href={`${paths.leaderboard(a.areaSlug)}?city=${encodeURIComponent(a.city)}`}
+              className="bg-paper font-display ring-line hover:ring-terracotta min-h-11 shrink-0 rounded-full px-4 py-2.5 text-sm font-bold ring-2"
+            >
               📍 {a.area}
             </Link>
           ))}

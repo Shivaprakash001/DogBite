@@ -10,7 +10,7 @@ export function QuizMissing() {
       <Mascot mood="confused" size={160} />
       <Card className="w-full">
         <h1 className="text-2xl font-extrabold">{copy.quizLanding.notFound}</h1>
-        <p className="mt-2 text-ink-soft">{copy.quizLanding.notFoundSub}</p>
+        <p className="text-ink-soft mt-2">{copy.quizLanding.notFoundSub}</p>
       </Card>
       <ButtonLink href="/create" size="lg">
         {copy.result.createCta}

@@ -25,7 +25,9 @@ export const POST = route(async (req) => {
     quizId = q?.id ?? null;
   }
   const [s] = await db().select({ ref: schema.sessions.refSessionId }).from(schema.sessions).where(eq(schema.sessions.id, session.id));
-  await db().insert(schema.shares).values({ sessionId: session.id, quizId, hostelId: b.hostelId, channel: b.channel, refSessionId: s?.ref ?? null });
+  await db()
+    .insert(schema.shares)
+    .values({ sessionId: session.id, quizId, hostelId: b.hostelId, channel: b.channel, refSessionId: s?.ref ?? null });
   recordEvent(session.id, 'share_click', { channel: b.channel, quiz_id: quizId, hostel_id: b.hostelId });
   return ok({ ok: true });
 });

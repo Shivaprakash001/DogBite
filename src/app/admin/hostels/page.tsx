@@ -29,11 +29,11 @@ async function Inner() {
 
       <Panel title="Merge queue" note="Near-duplicates students said were different. Merge points every foreign key at the kept hostel.">
         {h.queue.length === 0 ? (
-          <p className="text-sm text-ink-soft">Nothing to review.</p>
+          <p className="text-ink-soft text-sm">Nothing to review.</p>
         ) : (
           <ul className="flex flex-col gap-3">
             {h.queue.map((m) => (
-              <li key={m.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-cream p-3 ring-1 ring-line">
+              <li key={m.id} className="bg-cream ring-line flex flex-wrap items-center justify-between gap-2 rounded-xl p-3 ring-1">
                 <span className="text-sm">
                   <strong>{m.a_name}</strong> ({m.a_area}) ↔ <strong>{m.b_name}</strong> ({m.b_area}) · similarity {Number(m.similarity).toFixed(2)}
                 </span>
@@ -53,7 +53,7 @@ async function Inner() {
 
       <Panel title="Flagged entries" note="Auto-hidden at 5 flags unless verified.">
         {h.flagged.length === 0 ? (
-          <p className="text-sm text-ink-soft">No flags.</p>
+          <p className="text-ink-soft text-sm">No flags.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {h.flagged.map((f) => (
@@ -87,9 +87,12 @@ async function Inner() {
         </ul>
       </Panel>
 
-      <Panel title="Owner contact opt-ins by hostel" note="Numbers are encrypted at rest and never shown here. Export requires a separate, audited admin step (not built in v1).">
+      <Panel
+        title="Owner contact opt-ins by hostel"
+        note="Numbers are encrypted at rest and never shown here. Export requires a separate, audited admin step (not built in v1)."
+      >
         {h.contactsByHostel.length === 0 ? (
-          <p className="text-sm text-ink-soft">None yet.</p>
+          <p className="text-ink-soft text-sm">None yet.</p>
         ) : (
           <ul className="text-sm">
             {h.contactsByHostel.map((c) => (
@@ -100,7 +103,7 @@ async function Inner() {
           </ul>
         )}
       </Panel>
-      <Link href="/leaderboard" className="text-sm font-bold text-terracotta underline">
+      <Link href="/leaderboard" className="text-terracotta text-sm font-bold underline">
         Public Face-off →
       </Link>
     </AdminShell>

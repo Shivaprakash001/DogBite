@@ -51,30 +51,37 @@ async function HostelInner({ params }: { params: Params }) {
   return (
     <>
       <section className="flex items-start gap-3 pt-2">
-        <span aria-hidden className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-paper text-3xl shadow-soft ring-2 ring-line">
+        <span aria-hidden className="bg-paper shadow-soft ring-line flex size-16 shrink-0 items-center justify-center rounded-2xl text-3xl ring-2">
           {TYPE_EMOJI[hostel.type]}
         </span>
         <div className="min-w-0">
           <h1 className="text-[1.75rem] leading-tight font-extrabold">{hostel.name}</h1>
           <p className="text-ink-soft">
             {hostel.area}, {hostel.city}
-            {hostel.status !== 'user_added' && <span className="ml-2 rounded-full bg-correct-soft px-2 py-0.5 text-xs font-bold text-correct">✓ {hostel.status}</span>}
+            {hostel.status !== 'user_added' && (
+              <span className="bg-correct-soft text-correct ml-2 rounded-full px-2 py-0.5 text-xs font-bold">✓ {hostel.status}</span>
+            )}
           </p>
         </div>
       </section>
 
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <Link href={paths.leaderboard(slugifyArea(hostel.area))} className="flex flex-col items-center gap-1 rounded-2xl bg-paper p-3 text-center ring-2 ring-line">
+        <Link
+          href={paths.leaderboard(slugifyArea(hostel.area))}
+          className="bg-paper ring-line flex flex-col items-center gap-1 rounded-2xl p-3 text-center ring-2"
+        >
           {data.rank ? <RankBadge rank={data.rank} /> : <span className="text-2xl">—</span>}
-          <span className="text-xs font-bold text-ink-soft">{data.rank ? fmt(copy.hostelPage.rank, { rank: data.rank, area: hostel.area }) : copy.hostelPage.unranked}</span>
+          <span className="text-ink-soft text-xs font-bold">
+            {data.rank ? fmt(copy.hostelPage.rank, { rank: data.rank, area: hostel.area }) : copy.hostelPage.unranked}
+          </span>
         </Link>
-        <div className="flex flex-col items-center justify-center rounded-2xl bg-paper p-3 text-center ring-2 ring-line">
+        <div className="bg-paper ring-line flex flex-col items-center justify-center rounded-2xl p-3 text-center ring-2">
           <span className="font-display text-2xl font-extrabold tabular-nums">{data.players}</span>
-          <span className="text-xs font-bold text-ink-soft">{copy.hostelPage.statPlayers}</span>
+          <span className="text-ink-soft text-xs font-bold">{copy.hostelPage.statPlayers}</span>
         </div>
-        <div className="flex flex-col items-center justify-center rounded-2xl bg-paper p-3 text-center ring-2 ring-line">
+        <div className="bg-paper ring-line flex flex-col items-center justify-center rounded-2xl p-3 text-center ring-2">
           <span className="font-display text-2xl font-extrabold tabular-nums">{data.quizzes}</span>
-          <span className="text-xs font-bold text-ink-soft">{copy.hostelPage.statQuizzes}</span>
+          <span className="text-ink-soft text-xs font-bold">{copy.hostelPage.statQuizzes}</span>
         </div>
       </div>
 
@@ -90,9 +97,12 @@ async function HostelInner({ params }: { params: Params }) {
           <ul className="flex flex-col gap-2">
             {data.topQuizzes.map((q) => (
               <li key={q.slug}>
-                <Link href={paths.quiz(q.slug)} className="flex min-h-14 items-center justify-between gap-3 rounded-2xl bg-paper px-4 py-3 ring-2 ring-line hover:ring-terracotta">
+                <Link
+                  href={paths.quiz(q.slug)}
+                  className="bg-paper ring-line hover:ring-terracotta flex min-h-14 items-center justify-between gap-3 rounded-2xl px-4 py-3 ring-2"
+                >
                   <span className="font-display font-extrabold">{fmt(copy.quizLanding.title, { creator: q.creatorName })}</span>
-                  <span className="shrink-0 text-sm font-bold text-terracotta">{fmt(copy.hostelPage.players, { n: q.plays })}</span>
+                  <span className="text-terracotta shrink-0 text-sm font-bold">{fmt(copy.hostelPage.players, { n: q.plays })}</span>
                 </Link>
               </li>
             ))}
@@ -114,10 +124,10 @@ async function HostelInner({ params }: { params: Params }) {
           </h2>
           <ol className="flex flex-col gap-2">
             {data.topGuessers.map((g, i) => (
-              <li key={i} className="flex min-h-14 items-center gap-3 rounded-2xl bg-paper px-3 py-2 ring-2 ring-line">
+              <li key={i} className="bg-paper ring-line flex min-h-14 items-center gap-3 rounded-2xl px-3 py-2 ring-2">
                 <RankBadge rank={i + 1} />
-                <span className="flex-1 truncate font-display font-extrabold">{g.name}</span>
-                <span className="font-display text-sm font-extrabold text-terracotta tabular-nums">{fmt(copy.faceoff.points, { n: g.points })}</span>
+                <span className="font-display flex-1 truncate font-extrabold">{g.name}</span>
+                <span className="font-display text-terracotta text-sm font-extrabold tabular-nums">{fmt(copy.faceoff.points, { n: g.points })}</span>
               </li>
             ))}
           </ol>
@@ -131,18 +141,19 @@ async function HostelInner({ params }: { params: Params }) {
         {data.funStats.length > 0 ? (
           <ul className="flex flex-col gap-2">
             {data.funStats.map((s) => (
-              <li key={s.question} className="flex items-center gap-3 rounded-2xl bg-paper px-4 py-3 ring-2 ring-line">
+              <li key={s.question} className="bg-paper ring-line flex items-center gap-3 rounded-2xl px-4 py-3 ring-2">
                 <span aria-hidden className="text-3xl">
                   {s.emoji}
                 </span>
                 <span className="text-sm">
-                  <span className="font-display text-lg font-extrabold text-terracotta">{s.pct}%</span> “{s.label}” · <span className="text-ink-soft">{s.question}</span>
+                  <span className="font-display text-terracotta text-lg font-extrabold">{s.pct}%</span> “{s.label}” ·{' '}
+                  <span className="text-ink-soft">{s.question}</span>
                 </span>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="rounded-2xl bg-paper/70 px-4 py-4 text-center text-ink-soft ring-2 ring-line">
+          <p className="bg-paper/70 text-ink-soft ring-line rounded-2xl px-4 py-4 text-center ring-2">
             🔒 {fmt(copy.hostelPage.funLocked, { n: data.respondents, k: PRIVACY.minRespondents })}
           </p>
         )}
@@ -154,7 +165,10 @@ async function HostelInner({ params }: { params: Params }) {
         </ButtonLink>
         <SendToOwnerButton hostelId={hostel.id} hostelName={hostel.name} reportUrl={reportUrl} variant="secondary" />
         {discover && (
-          <a href={discover} className="inline-flex min-h-12 items-center justify-center rounded-chunky px-5 font-display font-extrabold text-terracotta underline underline-offset-4">
+          <a
+            href={discover}
+            className="rounded-chunky font-display text-terracotta inline-flex min-h-12 items-center justify-center px-5 font-extrabold underline underline-offset-4"
+          >
             {copy.hostelPage.discover} →
           </a>
         )}

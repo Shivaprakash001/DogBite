@@ -19,10 +19,10 @@ export function Sticker({ emoji, asset, size = 44, rotate = 0, className = '', s
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute flex items-center justify-center rounded-2xl bg-paper shadow-soft ring-4 ring-white select-none ${className}`}
+      className={`bg-paper shadow-soft pointer-events-none absolute flex items-center justify-center rounded-2xl ring-4 ring-white select-none ${className}`}
       style={{ width: size, height: size, transform: `rotate(${rotate}deg)`, fontSize: size * 0.55, ...style }}
     >
-      {src ? <Image src={src} alt="" width={size} height={size} className="h-full w-full rounded-2xl object-contain p-1" /> : emoji}
+      {src ? <Image src={src} alt="" width={size} height={size} className="h-full w-full rounded-2xl object-contain p-1" /> : (emoji ?? '✦')}
     </span>
   );
 }

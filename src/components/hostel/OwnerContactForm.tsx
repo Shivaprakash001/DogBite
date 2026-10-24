@@ -28,14 +28,14 @@ export function OwnerContactForm({ hostelId, consented: initialConsent }: { host
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className="mx-auto min-h-11 px-4 font-display font-bold text-terracotta underline underline-offset-4">
+      <button type="button" onClick={() => setOpen(true)} className="font-display text-terracotta mx-auto min-h-11 px-4 font-bold underline underline-offset-4">
         📇 {copy.report.contactTitle}
       </button>
       <Sheet open={open} onClose={() => setOpen(false)} title={copy.report.contactTitle} closeLabel={copy.common.close}>
         {!consented ? (
           <ConsentGate onAccepted={() => setConsented(true)} />
         ) : done ? (
-          <p className="py-6 text-center font-display text-lg font-extrabold text-correct" role="status">
+          <p className="font-display text-correct py-6 text-center text-lg font-extrabold" role="status">
             {copy.report.contactDone}
           </p>
         ) : (
@@ -54,7 +54,7 @@ export function OwnerContactForm({ hostelId, consented: initialConsent }: { host
               }
             }}
           >
-            <p className="text-sm leading-relaxed text-ink-soft">{copy.report.contactBody}</p>
+            <p className="text-ink-soft text-sm leading-relaxed">{copy.report.contactBody}</p>
             <div className="flex flex-col gap-1.5">
               <label htmlFor={`${id}-phone`} className="font-display font-bold">
                 {copy.report.contactPhone}
@@ -69,20 +69,32 @@ export function OwnerContactForm({ hostelId, consented: initialConsent }: { host
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="98xxxxxx10"
-                className="h-12 rounded-xl bg-paper px-4 font-semibold ring-2 ring-line outline-none focus:ring-4 focus:ring-terracotta"
+                className="bg-paper ring-line focus:ring-terracotta h-12 rounded-xl px-4 font-semibold ring-2 outline-none focus:ring-4"
               />
             </div>
             <div className="flex flex-col gap-1.5">
               <label htmlFor={`${id}-name`} className="font-display font-bold">
                 {copy.report.contactName}
               </label>
-              <input id={`${id}-name`} maxLength={40} value={name} onChange={(e) => setName(e.target.value)} autoComplete="off" className="h-12 rounded-xl bg-paper px-4 font-semibold ring-2 ring-line outline-none focus:ring-4 focus:ring-terracotta" />
+              <input
+                id={`${id}-name`}
+                maxLength={40}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="off"
+                className="bg-paper ring-line focus:ring-terracotta h-12 rounded-xl px-4 font-semibold ring-2 outline-none focus:ring-4"
+              />
             </div>
             <div className="flex flex-col gap-1.5">
               <label htmlFor={`${id}-rel`} className="font-display font-bold">
                 {copy.report.contactRelation}
               </label>
-              <select id={`${id}-rel`} value={relation} onChange={(e) => setRelation(e.target.value as (typeof RELATIONS)[number])} className="h-12 rounded-xl bg-paper px-4 font-semibold ring-2 ring-line">
+              <select
+                id={`${id}-rel`}
+                value={relation}
+                onChange={(e) => setRelation(e.target.value as (typeof RELATIONS)[number])}
+                className="bg-paper ring-line h-12 rounded-xl px-4 font-semibold ring-2"
+              >
                 {RELATIONS.map((r) => (
                   <option key={r} value={r}>
                     {copy.report.relations[r]}
@@ -91,7 +103,7 @@ export function OwnerContactForm({ hostelId, consented: initialConsent }: { host
               </select>
             </div>
             <label className="flex items-start gap-3 text-sm">
-              <input type="checkbox" required checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 size-5 accent-terracotta" />
+              <input type="checkbox" required checked={agree} onChange={(e) => setAgree(e.target.checked)} className="accent-terracotta mt-0.5 size-5" />
               <span>{copy.report.contactConsent}</span>
             </label>
             <Button type="submit" size="lg" disabled={busy || !agree}>

@@ -25,7 +25,7 @@ export function ProgressPills({ states }: { states: PillState[] }) {
         <li
           key={i}
           aria-current={s === 'current' ? 'step' : undefined}
-          className={`flex h-7 min-w-0 flex-1 items-center justify-center rounded-full font-display text-xs font-extrabold transition-all ${styles[s]}`}
+          className={`font-display flex h-7 min-w-0 flex-1 items-center justify-center rounded-full text-xs font-extrabold transition-all ${styles[s]}`}
         >
           <span aria-hidden>{s === 'correct' ? '✓' : s === 'wrong' ? '✗' : i + 1}</span>
           <span className="sr-only">
@@ -42,10 +42,17 @@ export function ProgressBar({ value, max, label }: { value: number; max: number;
   const pct = Math.round((Math.min(value, max) / max) * 100);
   return (
     <div className="flex items-center gap-3">
-      <div className="h-3 flex-1 overflow-hidden rounded-full bg-latte" role="progressbar" aria-valuemin={0} aria-valuemax={max} aria-valuenow={value} aria-label={label}>
-        <div className="h-full rounded-full bg-terracotta transition-[width] duration-300" style={{ width: `${pct}%` }} />
+      <div
+        className="bg-latte h-3 flex-1 overflow-hidden rounded-full"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-valuenow={value}
+        aria-label={label}
+      >
+        <div className="bg-terracotta h-full rounded-full transition-[width] duration-300" style={{ width: `${pct}%` }} />
       </div>
-      <span className="font-display text-sm font-extrabold text-terracotta tabular-nums">{label}</span>
+      <span className="font-display text-terracotta text-sm font-extrabold tabular-nums">{label}</span>
     </div>
   );
 }

@@ -127,11 +127,7 @@ async function hostelAnswers(hostelId: string, questionKeys?: string[]): Promise
     .innerJoin(schema.questions, eq(schema.questions.id, schema.quizQuestions.questionId))
     .innerJoin(schema.options, eq(schema.options.id, schema.quizQuestions.creatorOptionId))
     .where(
-      and(
-        eq(schema.creators.hostelId, hostelId),
-        eq(schema.quizzes.status, 'live'),
-        questionKeys ? inArray(schema.questions.key, questionKeys) : undefined,
-      ),
+      and(eq(schema.creators.hostelId, hostelId), eq(schema.quizzes.status, 'live'), questionKeys ? inArray(schema.questions.key, questionKeys) : undefined),
     )
     .orderBy(schema.creators.sessionId, schema.questions.key, desc(schema.quizzes.publishedAt));
   const out = new Map<string, Record<string, number>>();

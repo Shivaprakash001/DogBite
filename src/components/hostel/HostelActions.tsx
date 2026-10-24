@@ -11,7 +11,17 @@ import { track } from '@/lib/events';
  * "Send this to my owner/warden" (§11.3): the student sends it from their own
  * WhatsApp. Nothing is ever sent to owners automatically.
  */
-export function SendToOwnerButton({ hostelId, hostelName, reportUrl, variant = 'primary' }: { hostelId: string; hostelName: string; reportUrl: string; variant?: 'primary' | 'secondary' }) {
+export function SendToOwnerButton({
+  hostelId,
+  hostelName,
+  reportUrl,
+  variant = 'primary',
+}: {
+  hostelId: string;
+  hostelName: string;
+  reportUrl: string;
+  variant?: 'primary' | 'secondary';
+}) {
   const copy = useCopy();
   const message = fmt(copy.hostelPage.sendOwnerMsg, { hostel: hostelName, url: reportUrl });
   return (
@@ -25,8 +35,8 @@ export function SendToOwnerButton({ hostelId, hostelName, reportUrl, variant = '
       }}
       className={
         variant === 'primary'
-          ? 'inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-chunky bg-[#1f8f4e] px-6 py-4 font-display text-lg font-extrabold text-white shadow-[0_5px_0_0_#156b39] transition active:translate-y-[5px] active:shadow-none'
-          : 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-chunky bg-paper px-5 py-3 font-display font-extrabold ring-2 ring-line shadow-chunky-light transition active:translate-y-[5px] active:shadow-none'
+          ? 'rounded-chunky font-display inline-flex min-h-14 w-full items-center justify-center gap-2 bg-[#1f8f4e] px-6 py-4 text-lg font-extrabold text-white shadow-[0_5px_0_0_#156b39] transition active:translate-y-[5px] active:shadow-none'
+          : 'rounded-chunky bg-paper font-display ring-line shadow-chunky-light inline-flex min-h-12 w-full items-center justify-center gap-2 px-5 py-3 font-extrabold ring-2 transition active:translate-y-[5px] active:shadow-none'
       }
     >
       <span aria-hidden>📨</span> {copy.hostelPage.sendOwner}
@@ -51,7 +61,7 @@ export function FlagHostelButton({ hostelId }: { hostelId: string }) {
           toast(copy.common.error, 'error');
         }
       }}
-      className="mx-auto min-h-11 px-4 text-sm font-semibold text-ink-soft underline underline-offset-4 disabled:no-underline"
+      className="text-ink-soft mx-auto min-h-11 px-4 text-sm font-semibold underline underline-offset-4 disabled:no-underline"
     >
       🚩 {done ? copy.hostelPage.flagged : copy.hostelPage.flag}
     </button>

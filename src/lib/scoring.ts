@@ -45,10 +45,7 @@ export interface SubmittedAnswer<Q, O> {
  * skipped questions (null → wrong), answers for unknown questions (ignored) and
  * questions never answered (wrong).
  */
-export function scoreAttempt<Q, O>(
-  answers: readonly SubmittedAnswer<Q, O>[],
-  answerKey: ReadonlyMap<Q, O>,
-): { score: number; total: number; correct: Set<Q> } {
+export function scoreAttempt<Q, O>(answers: readonly SubmittedAnswer<Q, O>[], answerKey: ReadonlyMap<Q, O>): { score: number; total: number; correct: Set<Q> } {
   const seen = new Set<Q>();
   const correct = new Set<Q>();
   for (const a of answers) {

@@ -40,11 +40,11 @@ export function ConsentGate({ onAccepted }: { onAccepted: () => void }) {
         <h1 id="gate-title" className="text-2xl font-extrabold">
           {copy.gate.title}
         </h1>
-        <p className="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">{copy.gate.body}</p>
-        <Link href="/privacy" className="mt-2 inline-block min-h-11 py-2 text-sm font-semibold text-terracotta underline underline-offset-4">
+        <p className="text-ink-soft mt-2 text-[0.95rem] leading-relaxed">{copy.gate.body}</p>
+        <Link href="/privacy" className="text-terracotta mt-2 inline-block min-h-11 py-2 text-sm font-semibold underline underline-offset-4">
           {copy.gate.privacyLink}
         </Link>
-        <p className="mt-3 font-display text-lg font-extrabold">{copy.gate.ageQuestion}</p>
+        <p className="font-display mt-3 text-lg font-extrabold">{copy.gate.ageQuestion}</p>
         <div className="mt-4 flex flex-col gap-3">
           <Button size="lg" onClick={() => answer(true)} disabled={busy}>
             {copy.gate.yes}
@@ -65,7 +65,7 @@ export function MinorNotice() {
       <Mascot mood="sleepy" size={150} />
       <Card className="w-full">
         <h1 className="text-2xl font-extrabold">{copy.gate.minorTitle}</h1>
-        <p className="mt-2 text-ink-soft">{copy.gate.minorBody}</p>
+        <p className="text-ink-soft mt-2">{copy.gate.minorBody}</p>
       </Card>
     </section>
   );

@@ -26,7 +26,7 @@ async function Inner() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-ink-soft">
+              <tr className="text-ink-soft text-left">
                 {['Question', 'Kind', 'Impr.', 'Pick rate', 'Skip rate', 'Completion', 'Posterior', 'Status', ''].map((h) => (
                   <th key={h} className="py-1 pr-3 whitespace-nowrap">
                     {h}
@@ -36,7 +36,7 @@ async function Inner() {
             </thead>
             <tbody>
               {qs.map((q) => (
-                <tr key={q.key} className={`border-t border-line ${q.flagged ? 'bg-wrong-soft' : ''}`}>
+                <tr key={q.key} className={`border-line border-t ${q.flagged ? 'bg-wrong-soft' : ''}`}>
                   <td className="py-1.5 pr-3 font-mono text-xs">{q.key}</td>
                   <td className="py-1.5 pr-3">
                     {q.kind} · {q.objective}

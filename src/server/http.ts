@@ -1,4 +1,5 @@
 import 'server-only';
+import { unstable_rethrow } from 'next/navigation';
 import type { NextRequest } from 'next/server';
 import { z } from 'zod';
 import { COOKIE, isUuid } from './cookies';
@@ -27,6 +28,7 @@ export function route<C>(fn: Handler<C>): Handler<C> {
     try {
       return await fn(req, ctx);
     } catch (err) {
+      unstable_rethrow(err); // let Next's own control-flow signals (prerender bail-out, redirects) through
       if (err instanceof ApiError) {
         return Response.json({ error: err.code, message: err.message }, { status: err.status });
       }

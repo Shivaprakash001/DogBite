@@ -20,7 +20,7 @@ export function ShareBars({ bars, max = 5 }: { bars: Bar[]; max?: number }) {
             </span>
             <span className="font-display font-extrabold tabular-nums">{b.pct}%</span>
           </div>
-          <div className="h-2.5 overflow-hidden rounded-full bg-sand" aria-hidden>
+          <div className="bg-sand h-2.5 overflow-hidden rounded-full" aria-hidden>
             <div className={`h-full rounded-full ${i === 0 ? 'bg-terracotta' : 'bg-dusty'}`} style={{ width: `${Math.max(4, b.pct)}%` }} />
           </div>
         </li>

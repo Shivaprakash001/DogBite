@@ -1,32 +1,11 @@
 // Shared content types. Content lives in data files (and the DB, once seeded),
 // never hard-coded inside components.
 
-export const OBJECTIVE_TAGS = [
-  'gym',
-  'nutrition',
-  'mess',
-  'laundry',
-  'rent',
-  'pain_points',
-  'wtp',
-  'sleep',
-  'study',
-  'social',
-  'money',
-  'fun',
-] as const;
+export const OBJECTIVE_TAGS = ['gym', 'nutrition', 'mess', 'laundry', 'rent', 'pain_points', 'wtp', 'sleep', 'study', 'social', 'money', 'fun'] as const;
 export type ObjectiveTag = (typeof OBJECTIVE_TAGS)[number];
 
 /** Objectives that carry research weight. Everything else is "pure fun". */
-export const RESEARCH_TAGS = [
-  'gym',
-  'nutrition',
-  'mess',
-  'laundry',
-  'rent',
-  'pain_points',
-  'wtp',
-] as const satisfies readonly ObjectiveTag[];
+export const RESEARCH_TAGS = ['gym', 'nutrition', 'mess', 'laundry', 'rent', 'pain_points', 'wtp'] as const satisfies readonly ObjectiveTag[];
 export type ResearchTag = (typeof RESEARCH_TAGS)[number];
 
 export function isResearchTag(tag: string): tag is ResearchTag {

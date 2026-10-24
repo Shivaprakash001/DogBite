@@ -117,7 +117,7 @@ export function CreatorFlow({ initial, consented: initialConsent, minor, suggest
           <Mascot mood="celebrating" gender={state.gender} size={180} priority />
           <Card className="w-full">
             <h1 className="text-2xl font-extrabold">{copy.creator.readyTitle}</h1>
-            <p className="mt-2 text-ink-soft">{copy.creator.readySub}</p>
+            <p className="text-ink-soft mt-2">{copy.creator.readySub}</p>
           </Card>
           <Button
             size="lg"

@@ -12,7 +12,7 @@ export function LanguageSwitcher() {
       <select
         value={locale}
         onChange={(e) => isLocale(e.target.value) && setLocale(e.target.value)}
-        className="min-h-11 appearance-none rounded-full bg-paper py-2 pr-8 pl-3 font-display text-sm font-bold ring-2 ring-line"
+        className="bg-paper font-display ring-line min-h-11 appearance-none rounded-full py-2 pr-8 pl-3 text-sm font-bold ring-2"
       >
         {LOCALES.map((l) => (
           <option key={l} value={l}>

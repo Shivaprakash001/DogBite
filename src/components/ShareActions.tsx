@@ -87,7 +87,7 @@ export function ShareActions({ url, caption, title, quizSlug = null, hostelId = 
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => log('whatsapp')}
-        className="relative inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-chunky bg-[#1f8f4e] px-6 py-4 font-display text-lg font-extrabold text-white shadow-[0_5px_0_0_#156b39] transition active:translate-y-[5px] active:shadow-none"
+        className="rounded-chunky font-display relative inline-flex min-h-14 w-full items-center justify-center gap-2 bg-[#1f8f4e] px-6 py-4 text-lg font-extrabold text-white shadow-[0_5px_0_0_#156b39] transition active:translate-y-[5px] active:shadow-none"
       >
         <span aria-hidden>💬</span> {copy.done.whatsapp}
       </a>

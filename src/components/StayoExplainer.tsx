@@ -18,26 +18,29 @@ export function StayoExplainer({ source, discoverHref }: { source: string; disco
           setOpen(true);
           track('stayo_explainer_view', { source_screen: source });
         }}
-        className="mx-auto min-h-11 px-4 font-display font-bold text-ink-soft underline underline-offset-4"
+        className="font-display text-ink-soft mx-auto min-h-11 px-4 font-bold underline underline-offset-4"
       >
         {copy.stayo.whatIs}
       </button>
       <Sheet open={open} onClose={() => setOpen(false)} title={copy.stayo.whatIs} closeLabel={copy.common.close}>
         <ul className="flex flex-col gap-3">
           {copy.stayo.cards.map((c) => (
-            <li key={c.title} className="flex items-start gap-3 rounded-2xl bg-paper p-4 ring-2 ring-line">
+            <li key={c.title} className="bg-paper ring-line flex items-start gap-3 rounded-2xl p-4 ring-2">
               <span aria-hidden className="text-3xl">
                 {c.emoji}
               </span>
               <span>
-                <span className="block font-display font-extrabold">{c.title}</span>
-                <span className="block text-sm text-ink-soft">{c.body}</span>
+                <span className="font-display block font-extrabold">{c.title}</span>
+                <span className="text-ink-soft block text-sm">{c.body}</span>
               </span>
             </li>
           ))}
         </ul>
         {discoverHref && (
-          <a href={discoverHref} className="mt-4 flex min-h-14 items-center justify-center rounded-chunky bg-terracotta font-display text-lg font-extrabold text-white shadow-chunky">
+          <a
+            href={discoverHref}
+            className="rounded-chunky bg-terracotta font-display shadow-chunky mt-4 flex min-h-14 items-center justify-center text-lg font-extrabold text-white"
+          >
             {copy.stayo.discover} →
           </a>
         )}

@@ -46,14 +46,13 @@ export function isRetired(q: Pick<PoolQuestion, 'impressions' | 'skips'>, cfg: S
   return q.impressions >= cfg.retire.minImpressions && q.skips / q.impressions > cfg.retire.skipRate;
 }
 
-export function eligiblePool(pool: readonly PoolQuestion[], ctx: Pick<SelectionContext, 'segment' | 'excludeKeys'>, cfg: SelectionConfig = SELECTION): PoolQuestion[] {
+export function eligiblePool(
+  pool: readonly PoolQuestion[],
+  ctx: Pick<SelectionContext, 'segment' | 'excludeKeys'>,
+  cfg: SelectionConfig = SELECTION,
+): PoolQuestion[] {
   return pool.filter(
-    (q) =>
-      q.active &&
-      q.sensitivity <= 1 &&
-      (q.segment === 'all' || q.segment === ctx.segment) &&
-      !ctx.excludeKeys.has(q.key) &&
-      !isRetired(q, cfg),
+    (q) => q.active && q.sensitivity <= 1 && (q.segment === 'all' || q.segment === ctx.segment) && !ctx.excludeKeys.has(q.key) && !isRetired(q, cfg),
   );
 }
 
@@ -79,13 +78,7 @@ export function optionJaccard(a: readonly string[], b: readonly string[]): numbe
   return union === 0 ? 0 : shared / union;
 }
 
-function takeDiverse(
-  sorted: ScoredQuestion[],
-  count: number,
-  chosen: ScoredQuestion[],
-  cfg: SelectionConfig,
-  limitObjective: boolean,
-): ScoredQuestion[] {
+function takeDiverse(sorted: ScoredQuestion[], count: number, chosen: ScoredQuestion[], cfg: SelectionConfig, limitObjective: boolean): ScoredQuestion[] {
   const taken: ScoredQuestion[] = [];
   for (const q of sorted) {
     if (taken.length >= count) break;

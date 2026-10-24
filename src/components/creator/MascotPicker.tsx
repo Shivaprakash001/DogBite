@@ -14,7 +14,7 @@ export function MascotPicker({ name, onPick, busy }: { name: string; onPick: (g:
         <h1 id="mascot-title" className="text-3xl font-extrabold">
           {copy.mascot.title}
         </h1>
-        <p className="mt-1 text-ink-soft">{copy.mascot.sub}</p>
+        <p className="text-ink-soft mt-1">{copy.mascot.sub}</p>
       </div>
       <div className="grid grid-cols-1 gap-3">
         {OPTIONS.map((g) => (
@@ -23,15 +23,15 @@ export function MascotPicker({ name, onPick, busy }: { name: string; onPick: (g:
             type="button"
             disabled={busy}
             onClick={() => onPick(g)}
-            className="flex min-h-24 items-center gap-4 rounded-card bg-paper p-3 pr-5 text-left ring-2 ring-line shadow-chunky-light transition active:translate-y-1 active:shadow-none enabled:hover:ring-terracotta"
+            className="rounded-card bg-paper ring-line shadow-chunky-light enabled:hover:ring-terracotta flex min-h-24 items-center gap-4 p-3 pr-5 text-left ring-2 transition active:translate-y-1 active:shadow-none"
           >
-            <span className="rounded-2xl bg-latte">
+            <span className="bg-latte rounded-2xl">
               <Mascot mood={g === 'they' ? 'happy' : 'waving'} gender={g} size={84} decorative />
             </span>
             <span className="flex flex-col">
               <span className="font-display text-xl font-extrabold">{copy.mascot[g].label}</span>
-              <span className="text-sm font-semibold text-ink-soft">{copy.mascot[g].pronoun}</span>
-              <span className="mt-1 text-xs text-ink-soft">“{name}”</span>
+              <span className="text-ink-soft text-sm font-semibold">{copy.mascot[g].pronoun}</span>
+              <span className="text-ink-soft mt-1 text-xs">“{name}”</span>
             </span>
           </button>
         ))}

@@ -1,14 +1,33 @@
 // Hostel name normalisation, slugs and similarity (§7.2). The database uses
 // pg_trgm for search; trigramSimilarity mirrors it for tests and fallbacks.
 
-const STOP_WORDS = new Set(['boys', 'boy', 'girls', 'girl', 'ladies', 'gents', 'mens', 'womens', 'hostel', 'hostels', 'pg', 'the', 'and', 'for', 'co', 'living', 'stay', 'residency']);
+const STOP_WORDS = new Set([
+  'boys',
+  'boy',
+  'girls',
+  'girl',
+  'ladies',
+  'gents',
+  'mens',
+  'womens',
+  'hostel',
+  'hostels',
+  'pg',
+  'the',
+  'and',
+  'for',
+  'co',
+  'living',
+  'stay',
+  'residency',
+]);
 
 /** lowercase, strip punctuation + common words, collapse whitespace. */
 export function normalizeHostelName(name: string): string {
   return name
     .toLowerCase()
     .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
     .filter((w) => w && !STOP_WORDS.has(w))
@@ -20,7 +39,7 @@ export function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
     .slice(0, 60);

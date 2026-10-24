@@ -64,7 +64,7 @@ export function PickerList({ candidates, picked, onChange, shufflesLeft, onShuff
           <h1 id="pick-title" className="text-3xl font-extrabold">
             {copy.creator.pickTitle}
           </h1>
-          <p className="mt-1 text-ink-soft">{copy.creator.pickSub}</p>
+          <p className="text-ink-soft mt-1">{copy.creator.pickSub}</p>
         </div>
       </div>
 
@@ -79,18 +79,20 @@ export function PickerList({ candidates, picked, onChange, shufflesLeft, onShuff
                 aria-pressed={on}
                 onClick={() => toggle(c, i)}
                 disabled={busy || (!on && full)}
-                className={`flex min-h-16 w-full items-start gap-3 rounded-2xl px-4 py-3 text-left transition active:translate-y-0.5 disabled:opacity-50 ${on ? 'bg-paper ring-4 ring-terracotta' : 'bg-paper ring-2 ring-line'}`}
+                className={`flex min-h-16 w-full items-start gap-3 rounded-2xl px-4 py-3 text-left transition active:translate-y-0.5 disabled:opacity-50 ${on ? 'bg-paper ring-terracotta ring-4' : 'bg-paper ring-line ring-2'}`}
               >
                 <span
                   aria-hidden
-                  className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full font-display text-sm font-extrabold ${on ? 'bg-terracotta text-white' : 'bg-latte text-transparent'}`}
+                  className={`font-display mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold ${on ? 'bg-terracotta text-white' : 'bg-latte text-transparent'}`}
                 >
                   {on ? order : '·'}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-display font-bold leading-snug">{c.text}</span>
+                  <span className="font-display block leading-snug font-bold">{c.text}</span>
                   <span className="mt-1.5 flex items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-[0.7rem] font-bold ${CATEGORY_STYLE[c.category]}`}>{copy.creator.categories[c.category]}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-[0.7rem] font-bold ${CATEGORY_STYLE[c.category]}`}>
+                      {copy.creator.categories[c.category]}
+                    </span>
                     <span aria-hidden className="text-sm tracking-wider">
                       {c.previewEmojis.join(' ')}
                     </span>
@@ -102,16 +104,16 @@ export function PickerList({ candidates, picked, onChange, shufflesLeft, onShuff
         })}
       </ul>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[440px] bg-gradient-to-t from-cream via-cream to-cream/0 px-4 pt-6 pb-4">
+      <div className="from-cream via-cream to-cream/0 fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[440px] bg-gradient-to-t px-4 pt-6 pb-4">
         <div className="mb-3 flex items-center justify-between">
-          <span className="font-display text-lg font-extrabold text-terracotta tabular-nums" aria-live="polite">
+          <span className="font-display text-terracotta text-lg font-extrabold tabular-nums" aria-live="polite">
             {fmt(copy.creator.pickedCount, { n: picked.length })}
           </span>
           <button
             type="button"
             onClick={onShuffle}
             disabled={busy || shufflesLeft === 0}
-            className="min-h-11 rounded-full bg-paper px-4 font-display text-sm font-bold ring-2 ring-line disabled:opacity-40"
+            className="bg-paper font-display ring-line min-h-11 rounded-full px-4 text-sm font-bold ring-2 disabled:opacity-40"
           >
             🎲 {copy.creator.shuffle} <span className="text-ink-soft">· {fmt(copy.creator.shufflesLeft, { n: shufflesLeft })}</span>
           </button>

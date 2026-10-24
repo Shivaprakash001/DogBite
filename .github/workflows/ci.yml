@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: stayo
+          POSTGRES_PASSWORD: stayo
+          POSTGRES_DB: stayo_quiz
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U stayo" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://stayo:stayo@localhost:5432/stayo_quiz
+      SESSION_SECRET: ci-session-secret-ci-session-secret-ci-session
+      CONTACT_ENC_KEY: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+      ADMIN_KEYS: ci-admin-key-ci-admin-key-0001
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      DISCOVER_BASE_URL: https://example.com/discover
+      OWNER_SIGNUP_URL: https://example.com/owners
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run db:setup
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          CI: 'true'

@@ -144,7 +144,7 @@ const en = {
     playedAlready: 'You scored {score}/10 already',
     retry: 'Retry once',
     viewResult: 'See my result',
-    ownQuiz: "This is your quiz! Share it and watch the board.",
+    ownQuiz: 'This is your quiz! Share it and watch the board.',
     ownQuizCta: 'Share my quiz',
     notFound: 'This quiz has vanished 👻',
     notFoundSub: 'It may have been deleted. Make your own instead?',
@@ -229,7 +229,8 @@ const en = {
     ownerBody: 'Stayo helps owners collect rent, track complaints and climb the hostel rankings.',
     ownerCta: 'Claim your hostel page',
     contactTitle: 'Want us to send this to your owner?',
-    contactBody: "Add your owner/warden's number and we'll share this report with them once. We use it only for that, keep it encrypted, never show it publicly, and they can opt out anytime.",
+    contactBody:
+      "Add your owner/warden's number and we'll share this report with them once. We use it only for that, keep it encrypted, never show it publicly, and they can opt out anytime.",
     contactName: 'Their name (optional)',
     contactPhone: 'Phone number',
     contactRelation: 'They are the…',
@@ -282,11 +283,7 @@ const en = {
   },
 } as const;
 
-type Widen<T> = T extends string
-  ? string
-  : T extends readonly (infer U)[]
-    ? readonly Widen<U>[]
-    : { readonly [K in keyof T]: Widen<T[K]> };
+type Widen<T> = T extends string ? string : T extends readonly (infer U)[] ? readonly Widen<U>[] : { readonly [K in keyof T]: Widen<T[K]> };
 type DeepPartial<T> = T extends string ? string : T extends readonly unknown[] ? T : { [K in keyof T]?: DeepPartial<T[K]> };
 
 export type Copy = Widen<typeof en>;

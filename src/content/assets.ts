@@ -3,23 +3,13 @@ import type { Gender } from './types';
 // Asset manifest: components reference semantic keys, never file paths.
 // To swap art, change a path here. Missing keys render a placeholder (see resolveAsset).
 
-export const MASCOT_MOODS = [
-  'waving',
-  'happy',
-  'celebrating',
-  'neutral',
-  'thinking',
-  'confused',
-  'sleepy',
-  'sad',
-  'shocked',
-  'pulling',
-] as const;
+export const MASCOT_MOODS = ['waving', 'happy', 'celebrating', 'neutral', 'thinking', 'confused', 'sleepy', 'sad', 'shocked', 'pulling'] as const;
 export type MascotMood = (typeof MASCOT_MOODS)[number];
 
-const mascotEntries = Object.fromEntries(
-  MASCOT_MOODS.map((mood) => [`mascot.${mood}`, `/brand/mascot/stayo-mascot-${mood}.svg`]),
-) as Record<`mascot.${MascotMood}`, string>;
+const mascotEntries = Object.fromEntries(MASCOT_MOODS.map((mood) => [`mascot.${mood}`, `/brand/mascot/stayo-mascot-${mood}.svg`])) as Record<
+  `mascot.${MascotMood}`,
+  string
+>;
 
 export const ASSETS = {
   ...mascotEntries,

@@ -20,7 +20,7 @@ export default function LandingPage() {
     <>
       <TrackArrival page="landing" />
       <section className="flex flex-col items-center pt-4 text-center">
-        <span className="rounded-full bg-paper px-3 py-1 font-display text-xs font-extrabold tracking-wide text-terracotta uppercase ring-2 ring-line">
+        <span className="bg-paper font-display text-terracotta ring-line rounded-full px-3 py-1 text-xs font-extrabold tracking-wide uppercase ring-2">
           {copy.landing.kicker}
         </span>
         <h1 className="mt-4 text-[2.6rem] leading-[1.05] font-extrabold text-balance">
@@ -29,7 +29,7 @@ export default function LandingPage() {
             <>
               <span className="relative inline-block">
                 <span className="relative z-10">{word}</span>
-                <span aria-hidden className="absolute inset-x-0 bottom-1 z-0 h-3 -rotate-1 rounded-full bg-marigold/80" />
+                <span aria-hidden className="bg-marigold/80 absolute inset-x-0 bottom-1 z-0 h-3 -rotate-1 rounded-full" />
               </span>
               {after}
             </>
@@ -44,7 +44,7 @@ export default function LandingPage() {
           <Sticker emoji="🚫" size={40} rotate={-6} className="-right-2 bottom-10" />
         </div>
 
-        <p className="mt-4 max-w-[34ch] text-lg leading-relaxed text-ink-soft">{copy.landing.sub}</p>
+        <p className="text-ink-soft mt-4 max-w-[34ch] text-lg leading-relaxed">{copy.landing.sub}</p>
 
         <TrackedLink href="/create" event="start_click" eventProps={{ quiz_slug: null }} className={buttonClass('primary', 'lg', 'mt-6')}>
           {copy.landing.cta} →
@@ -59,7 +59,7 @@ export default function LandingPage() {
           <ol className="flex flex-col gap-4">
             {copy.landing.how.map((step, i) => (
               <li key={i} className="flex items-center gap-3">
-                <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl shadow-soft ring-2 ring-line">
+                <span aria-hidden className="shadow-soft ring-line flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white text-2xl ring-2">
                   {step.emoji}
                 </span>
                 <span className="font-display font-bold">{step.text}</span>
@@ -74,8 +74,8 @@ export default function LandingPage() {
           <h2 id="board-title" className="text-xl font-extrabold">
             {copy.landing.boardTitle}
           </h2>
-          <span className="flex items-center gap-1.5 text-xs font-bold text-correct">
-            <span aria-hidden className="size-2 rounded-full bg-correct" /> {copy.landing.live}
+          <span className="text-correct flex items-center gap-1.5 text-xs font-bold">
+            <span aria-hidden className="bg-correct size-2 rounded-full" /> {copy.landing.live}
           </span>
         </div>
         <Suspense fallback={<ListSkeleton rows={3} />}>

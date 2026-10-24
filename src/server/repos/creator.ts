@@ -41,7 +41,12 @@ async function requireDraft(sid: string): Promise<Draft> {
 
 function newSlug(name: string): string {
   const base = slugify(name).slice(0, 14) || 'quiz';
-  return `${base}-${randomBytes(4).toString('base64url').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5).padEnd(5, 'x')}`;
+  return `${base}-${randomBytes(4)
+    .toString('base64url')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '')
+    .slice(0, 5)
+    .padEnd(5, 'x')}`;
 }
 
 function toCandidate(q: QuestionRow, name: string, gender: Gender | null): CandidateDTO {
@@ -224,7 +229,10 @@ export async function confirmPicks(sid: string, keys: readonly string[]): Promis
 
   await db().transaction(async (tx) => {
     await tx.insert(schema.quizQuestions).values(rows.map((q, position) => ({ quizId: draft.quiz.id, questionId: q.id, position })));
-    await tx.update(schema.quizzes).set({ picksConfirmedAt: sql`now()` }).where(eq(schema.quizzes.id, draft.quiz.id));
+    await tx
+      .update(schema.quizzes)
+      .set({ picksConfirmedAt: sql`now()` })
+      .where(eq(schema.quizzes.id, draft.quiz.id));
   });
   await bumpStats(
     rows.map((q) => q.id),

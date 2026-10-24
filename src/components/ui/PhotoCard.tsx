@@ -39,11 +39,9 @@ export function PhotoCard({ label, emoji, image, state = 'idle', onSelect, disab
       onClick={onSelect}
       disabled={disabled}
       aria-pressed={pressed}
-      className={`group relative flex w-full flex-col overflow-hidden rounded-[1.25rem] bg-paper text-left transition-[transform,box-shadow] duration-100 enabled:active:translate-y-1 disabled:cursor-default ${stateRing[state]}`}
+      className={`group bg-paper relative flex w-full flex-col overflow-hidden rounded-[1.25rem] text-left transition-[transform,box-shadow] duration-100 enabled:active:translate-y-1 disabled:cursor-default ${stateRing[state]}`}
     >
-      <span
-        className={`relative flex w-full items-center justify-center ${size === 'md' ? 'aspect-square' : 'aspect-[4/3]'} ${TINTS[tint % TINTS.length]}`}
-      >
+      <span className={`relative flex w-full items-center justify-center ${size === 'md' ? 'aspect-square' : 'aspect-[4/3]'} ${TINTS[tint % TINTS.length]}`}>
         {src ? (
           <Image src={src} alt={label} fill sizes="(max-width: 440px) 45vw, 200px" className="object-cover" />
         ) : (
@@ -53,13 +51,13 @@ export function PhotoCard({ label, emoji, image, state = 'idle', onSelect, disab
         )}
         {(state === 'correct' || state === 'wrong') && (
           <span
-            className={`absolute top-2 right-2 flex size-9 items-center justify-center rounded-full text-lg font-black text-white shadow-soft ${state === 'correct' ? 'bg-correct' : 'bg-wrong'}`}
+            className={`shadow-soft absolute top-2 right-2 flex size-9 items-center justify-center rounded-full text-lg font-black text-white ${state === 'correct' ? 'bg-correct' : 'bg-wrong'}`}
           >
             <span aria-hidden>{state === 'correct' ? '✓' : '✗'}</span>
           </span>
         )}
       </span>
-      <span className={`flex min-h-14 items-center px-3 py-2.5 font-display font-bold leading-tight ${size === 'md' ? 'text-[0.95rem]' : 'text-sm'}`}>
+      <span className={`font-display flex min-h-14 items-center px-3 py-2.5 leading-tight font-bold ${size === 'md' ? 'text-[0.95rem]' : 'text-sm'}`}>
         {label}
       </span>
       {(state === 'correct' || state === 'wrong') && <span className="sr-only">{state === 'correct' ? 'Correct answer' : 'Wrong answer'}</span>}

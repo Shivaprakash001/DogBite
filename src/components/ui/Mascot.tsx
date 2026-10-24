@@ -37,15 +37,32 @@ export function Mascot({ mood, gender = null, size = 160, animation, decorative 
   return (
     <div className={`relative shrink-0 ${className}`} style={{ width: size, height: size }} data-animation={animation} data-mood={mood}>
       {src ? (
-        <Image src={src} alt={decorative ? '' : `Stayo pup, ${MOOD_ALT[mood]}`} width={size} height={size} unoptimized priority={priority} className="h-full w-full" />
+        <Image
+          src={src}
+          alt={decorative ? '' : `Stayo pup, ${MOOD_ALT[mood]}`}
+          width={size}
+          height={size}
+          unoptimized
+          priority={priority}
+          className="h-full w-full"
+        />
       ) : (
-        <div className="flex h-full w-full items-center justify-center rounded-full bg-latte text-4xl" role={decorative ? undefined : 'img'} aria-label={decorative ? undefined : 'Stayo pup'}>
+        <div
+          className="bg-latte flex h-full w-full items-center justify-center rounded-full text-4xl"
+          role={decorative ? undefined : 'img'}
+          aria-label={decorative ? undefined : 'Stayo pup'}
+        >
           🐶
         </div>
       )}
       {gender && src && (
         // Static, first-party markup from content/mascot-accessories (no user input).
-        <svg viewBox="0 0 300 300" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden dangerouslySetInnerHTML={{ __html: accessoryMarkup(gender, mood) }} />
+        <svg
+          viewBox="0 0 300 300"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          aria-hidden
+          dangerouslySetInnerHTML={{ __html: accessoryMarkup(gender, mood) }}
+        />
       )}
     </div>
   );

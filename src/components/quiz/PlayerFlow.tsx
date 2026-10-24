@@ -198,8 +198,19 @@ export function PlayerFlow({ slug, creatorName, creatorGender, consented: initia
     <section className="flex flex-1 flex-col gap-6 pt-1">
       <ProgressPills states={pills} />
       <div className="flex items-center gap-3">
-        <Mascot mood={pending !== null && question && results.get(question.quizQuestionId) ? (results.get(question.quizQuestionId)!.correct ? 'happy' : 'sad') : 'thinking'} gender={creatorGender} size={64} decorative />
-        <p className="font-display text-sm font-bold text-ink-soft">{fmt(copy.play.questionOf, { n: current + 1 })}</p>
+        <Mascot
+          mood={
+            pending !== null && question && results.get(question.quizQuestionId)
+              ? results.get(question.quizQuestionId)!.correct
+                ? 'happy'
+                : 'sad'
+              : 'thinking'
+          }
+          gender={creatorGender}
+          size={64}
+          decorative
+        />
+        <p className="font-display text-ink-soft text-sm font-bold">{fmt(copy.play.questionOf, { n: current + 1 })}</p>
       </div>
       {question && <QuestionCard question={question} result={results.get(question.quizQuestionId) ?? null} pendingOptionId={pending} onGuess={guess} />}
       <p className="sr-only" aria-live="assertive">

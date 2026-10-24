@@ -62,7 +62,7 @@ export function HostelPicker({ onDone, busy, suggested = null }: HostelPickerPro
         <h1 id={`${searchId}-title`} className="text-3xl font-extrabold">
           {copy.hostel.title}
         </h1>
-        <p className="mt-1 text-ink-soft">{copy.hostel.sub}</p>
+        <p className="text-ink-soft mt-1">{copy.hostel.sub}</p>
       </div>
 
       {suggested && (
@@ -70,15 +70,15 @@ export function HostelPicker({ onDone, busy, suggested = null }: HostelPickerPro
           type="button"
           onClick={() => pick(suggested)}
           disabled={busy}
-          className="flex min-h-16 w-full items-center gap-3 rounded-2xl bg-latte px-4 py-3 text-left ring-4 ring-terracotta"
+          className="bg-latte ring-terracotta flex min-h-16 w-full items-center gap-3 rounded-2xl px-4 py-3 text-left ring-4"
         >
           <span aria-hidden className="text-2xl">
             ⭐
           </span>
           <span className="min-w-0">
-            <span className="block text-sm font-bold text-terracotta">{copy.hostel.suggested}</span>
-            <span className="block truncate font-display font-extrabold">{suggested.name}</span>
-            <span className="block truncate text-sm text-ink-soft">
+            <span className="text-terracotta block text-sm font-bold">{copy.hostel.suggested}</span>
+            <span className="font-display block truncate font-extrabold">{suggested.name}</span>
+            <span className="text-ink-soft block truncate text-sm">
               {suggested.area}, {suggested.city}
             </span>
           </span>
@@ -93,7 +93,7 @@ export function HostelPicker({ onDone, busy, suggested = null }: HostelPickerPro
             role="radio"
             aria-checked={c === city}
             onClick={() => setCity(c)}
-            className={`min-h-11 shrink-0 rounded-full px-4 font-display text-sm font-bold ring-2 ${c === city ? 'bg-charcoal text-white ring-charcoal' : 'bg-paper ring-line'}`}
+            className={`font-display min-h-11 shrink-0 rounded-full px-4 text-sm font-bold ring-2 ${c === city ? 'bg-charcoal ring-charcoal text-white' : 'bg-paper ring-line'}`}
           >
             {c}
           </button>
@@ -114,34 +114,33 @@ export function HostelPicker({ onDone, busy, suggested = null }: HostelPickerPro
           onChange={(e) => setQuery(e.target.value.slice(0, 60))}
           placeholder={copy.hostel.searchPlaceholder}
           autoComplete="off"
-          className="h-14 w-full rounded-2xl bg-paper pr-4 pl-12 font-display text-lg font-bold ring-2 ring-line outline-none placeholder:text-ink-soft/60 focus:ring-4 focus:ring-terracotta"
+          className="bg-paper font-display ring-line placeholder:text-ink-soft/60 focus:ring-terracotta h-14 w-full rounded-2xl pr-4 pl-12 text-lg font-bold ring-2 outline-none focus:ring-4"
         />
       </div>
 
       <ul className="flex flex-col gap-2" aria-live="polite" aria-busy={results === null}>
-        {results === null &&
-          [0, 1, 2].map((i) => <li key={i} className="h-16 animate-pulse rounded-2xl bg-latte/60" aria-hidden />)}
+        {results === null && [0, 1, 2].map((i) => <li key={i} className="bg-latte/60 h-16 animate-pulse rounded-2xl" aria-hidden />)}
         {results?.map((h) => (
           <li key={h.id}>
             <button
               type="button"
               onClick={() => pick(h)}
               disabled={busy}
-              className="flex min-h-16 w-full items-center gap-3 rounded-2xl bg-paper px-4 py-3 text-left ring-2 ring-line transition active:translate-y-0.5 enabled:hover:ring-terracotta"
+              className="bg-paper ring-line enabled:hover:ring-terracotta flex min-h-16 w-full items-center gap-3 rounded-2xl px-4 py-3 text-left ring-2 transition active:translate-y-0.5"
             >
-              <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-latte text-xl">
+              <span aria-hidden className="bg-latte flex size-10 shrink-0 items-center justify-center rounded-xl text-xl">
                 {TYPE_EMOJI[h.type]}
               </span>
               <span className="min-w-0">
-                <span className="block truncate font-display font-extrabold">{h.name}</span>
-                <span className="block truncate text-sm text-ink-soft">
+                <span className="font-display block truncate font-extrabold">{h.name}</span>
+                <span className="text-ink-soft block truncate text-sm">
                   {h.area}, {h.city}
                 </span>
               </span>
             </button>
           </li>
         ))}
-        {results?.length === 0 && <li className="py-2 text-center text-ink-soft">{copy.hostel.noResults}</li>}
+        {results?.length === 0 && <li className="text-ink-soft py-2 text-center">{copy.hostel.noResults}</li>}
       </ul>
 
       <Button variant="secondary" size="lg" onClick={() => setAdding(true)} disabled={busy}>
@@ -154,7 +153,7 @@ export function HostelPicker({ onDone, busy, suggested = null }: HostelPickerPro
           track('hostel_skip', { search_len: query.length, time_ms: Date.now() - startedAt.current });
           onDone(null);
         }}
-        className="mx-auto min-h-11 px-4 font-display font-bold text-ink-soft underline underline-offset-4"
+        className="font-display text-ink-soft mx-auto min-h-11 px-4 font-bold underline underline-offset-4"
       >
         {copy.hostel.skip}
       </button>
@@ -239,10 +238,10 @@ function AddHostelSheet({
                 onClose();
                 onCreated(h);
               }}
-              className="min-h-14 rounded-2xl bg-paper px-4 py-3 text-left ring-2 ring-line hover:ring-terracotta"
+              className="bg-paper ring-line hover:ring-terracotta min-h-14 rounded-2xl px-4 py-3 text-left ring-2"
             >
-              <span className="block font-display font-extrabold">{h.name}</span>
-              <span className="block text-sm text-ink-soft">
+              <span className="font-display block font-extrabold">{h.name}</span>
+              <span className="text-ink-soft block text-sm">
                 {h.area}, {h.city}
               </span>
             </button>
@@ -277,14 +276,25 @@ function AddHostelSheet({
           </Field>
           {area === '__other' && (
             <Field label={copy.hostel.addAreaFree} htmlFor={`${id}-other`}>
-              <input id={`${id}-other`} required minLength={2} maxLength={40} value={otherArea} onChange={(e) => setOtherArea(e.target.value)} className={inputClass} />
+              <input
+                id={`${id}-other`}
+                required
+                minLength={2}
+                maxLength={40}
+                value={otherArea}
+                onChange={(e) => setOtherArea(e.target.value)}
+                className={inputClass}
+              />
             </Field>
           )}
           <fieldset>
-            <legend className="mb-2 font-display font-bold">{copy.hostel.addType}</legend>
+            <legend className="font-display mb-2 font-bold">{copy.hostel.addType}</legend>
             <div className="grid grid-cols-2 gap-2">
               {(['boys', 'girls', 'coed', 'unknown'] as const).map((t) => (
-                <label key={t} className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-xl px-3 ring-2 ${type === t ? 'bg-latte ring-terracotta' : 'bg-paper ring-line'}`}>
+                <label
+                  key={t}
+                  className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-xl px-3 ring-2 ${type === t ? 'bg-latte ring-terracotta' : 'bg-paper ring-line'}`}
+                >
                   <input type="radio" name={`${id}-type`} value={t} checked={type === t} onChange={() => setType(t)} className="sr-only" />
                   <span aria-hidden>{TYPE_EMOJI[t]}</span>
                   <span className="font-display font-bold">{copy.hostel.types[t]}</span>

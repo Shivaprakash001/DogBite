@@ -26,13 +26,13 @@ export default function PrivacyPage() {
 
       <Card className="mt-5" lined>
         <h2 className="text-lg font-extrabold">{copy.privacy.collectTitle}</h2>
-        <ul className="mt-2 flex list-disc flex-col gap-1.5 pl-5 text-ink-soft">
+        <ul className="text-ink-soft mt-2 flex list-disc flex-col gap-1.5 pl-5">
           {copy.privacy.collect.map((c) => (
             <li key={c}>{c}</li>
           ))}
         </ul>
         <h2 className="mt-5 text-lg font-extrabold">{copy.privacy.whyTitle}</h2>
-        <p className="mt-2 text-ink-soft">{fmt(copy.privacy.why, { k: PRIVACY.minRespondents })}</p>
+        <p className="text-ink-soft mt-2">{fmt(copy.privacy.why, { k: PRIVACY.minRespondents })}</p>
       </Card>
 
       <section className="mt-8" aria-labelledby="mine">
@@ -49,11 +49,11 @@ export default function PrivacyPage() {
           <h2 id="del" className="text-lg font-extrabold">
             {copy.privacy.deleteTitle}
           </h2>
-          <p className="mt-2 mb-4 text-ink-soft">{copy.privacy.deleteBody}</p>
+          <p className="text-ink-soft mt-2 mb-4">{copy.privacy.deleteBody}</p>
           <DeleteMyData />
         </Card>
       </section>
-      <p className="mt-6 text-center text-sm text-ink-soft">{copy.privacy.contact}</p>
+      <p className="text-ink-soft mt-6 text-center text-sm">{copy.privacy.contact}</p>
     </>
   );
 }
@@ -66,8 +66,8 @@ async function MyQuizzes() {
   return (
     <ul className="flex flex-col gap-2">
       {quizzes.map((q) => (
-        <li key={q.slug} className="flex items-center justify-between gap-2 rounded-2xl bg-paper px-4 py-2 ring-2 ring-line">
-          <Link href={paths.quiz(q.slug)} className="min-h-11 py-2.5 font-display font-extrabold">
+        <li key={q.slug} className="bg-paper ring-line flex items-center justify-between gap-2 rounded-2xl px-4 py-2 ring-2">
+          <Link href={paths.quiz(q.slug)} className="font-display min-h-11 py-2.5 font-extrabold">
             {fmt(copy.quizLanding.title, { creator: q.name })}
           </Link>
           <DeleteQuizButton slug={q.slug} after="refresh" />
