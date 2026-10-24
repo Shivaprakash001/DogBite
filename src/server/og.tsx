@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- satori (ImageResponse) renders plain <img>, next/image doesn't apply */
 import 'server-only';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
