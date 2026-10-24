@@ -1,0 +1,21 @@
+<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <g id="tail"><path d="M205 250 C240 255 255 240 258 215 C260 235 248 268 210 272 Z" fill="#A45D44"/></g>
+  <g id="body">
+    <path d="M95 300 C90 230 100 190 150 185 C200 190 210 230 205 300 Z" fill="#B46A55"/>
+    <ellipse cx="150" cy="255" rx="34" ry="40" fill="#EBD9C4"/>
+  </g>
+
+  <g id="head-group" transform="rotate(4 150 130)">
+    <g id="ear-left"><path d="M96 92 C68 100 58 145 78 185 C90 205 108 200 110 178 C112 150 108 115 96 92 Z" fill="#A45D44"/></g>
+    <g id="ear-right"><path d="M204 92 C232 100 242 145 222 185 C210 205 192 200 190 178 C188 150 192 115 204 92 Z" fill="#A45D44"/></g>
+    <circle id="head" cx="150" cy="128" r="62" fill="#B46A55"/>
+    <ellipse id="muzzle" cx="150" cy="152" rx="36" ry="26" fill="#EBD9C4"/>
+    <circle id="nose" cx="150" cy="140" r="7" fill="#2F2F2F"/>
+    <g id="eyebrow-left"></g>
+    <g id="eyebrow-right"></g>
+    <g id="eye-left"><path d="M121 113 Q130 118 139 113" stroke="#2F2F2F" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+    <g id="eye-right"><path d="M161 113 Q170 118 179 113" stroke="#2F2F2F" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+    <g id="mouth"><path d="M144 160 Q150 164 156 160" stroke="#2F2F2F" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+    <g id="zzz" font-family="Manrope, sans-serif" font-weight="800" fill="#D2986C"><text x="205" y="75" font-size="22">z</text><text x="222" y="55" font-size="17">z</text><text x="236" y="38" font-size="13">z</text></g>
+  </g>
+<g id="paws"><ellipse cx="122" cy="292" rx="16" ry="10" fill="#EBD9C4"/><ellipse cx="178" cy="292" rx="16" ry="10" fill="#EBD9C4"/></g></svg>
