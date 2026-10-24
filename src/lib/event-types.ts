@@ -55,8 +55,8 @@ export const EVENT_NAMES = [
 /** Events the browser may send. Server-authoritative events are written by API handlers. */
 export const CLIENT_EVENTS = new Set<EventName>([
   'landing_view', 'start_click', 'name_submit', 'hostel_pick', 'hostel_skip', 'question_view',
-  'quiz_abandon', 'result_view', 'teaser_view', 'discover_click', 'create_start',
-  'candidate_pick', 'candidate_unpick', 'share_click', 'share_open', 'report_view',
+  'quiz_abandon', 'result_view', 'teaser_view', 'create_start',
+  'candidate_pick', 'candidate_unpick', 'share_open', 'report_view',
   'report_send_owner_click', 'stayo_explainer_view', 'sound_toggle', 'locale_change',
 ]);
 

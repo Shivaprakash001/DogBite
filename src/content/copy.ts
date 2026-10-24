@@ -29,6 +29,8 @@ const en = {
   landing: {
     kicker: 'The hostel friendship test',
     headline: 'Will your roomie block you?',
+    /** Word in the headline that gets the marker highlight. */
+    headlineHighlight: 'block',
     sub: 'Make a 10-question quiz about your hostel life in 2 minutes. Send it to your gang. See who really knows you.',
     cta: 'Make my quiz',
     howTitle: 'How it works',
@@ -38,6 +40,7 @@ const en = {
       { emoji: '🏆', text: 'Watch the scoreboard (and your hostel rank)' },
     ],
     boardTitle: 'Hostels playing right now',
+    live: 'Live',
     boardEmpty: 'No hostels on the board yet. Yours could be first 👀',
     boardCta: 'See the Hostel Face-off',
   },
@@ -106,6 +109,8 @@ const en = {
     answerHint: 'Only you know this. Friends will have to guess.',
     answerProgress: '{n}/10',
     skipQuestion: 'Swap this question',
+    readyTitle: 'All 10 answered! 🎉',
+    readySub: 'Publish it and see who in your hostel really knows you.',
     publish: 'Publish my quiz',
     publishing: 'Publishing…',
     resumeToast: 'Welcome back! Picking up where you left off.',
@@ -165,6 +170,7 @@ const en = {
     share: 'Share my score',
     viewBoard: 'Full scoreboard',
     sharedTitle: '{player} scored {score}/10 on {creator}’s quiz',
+    teaserKicker: 'Stayo · coming soon',
     teaserThanks: "You're on the list! 🎉",
     teaserLink: 'Get early access on Stayo',
   },

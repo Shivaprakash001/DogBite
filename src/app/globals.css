@@ -1,26 +1,79 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import '../styles/tokens.css';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-tap-highlight-color: transparent;
+  text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+}
+
+/* Faint Stayo icon pattern behind everything, like the brand banners. */
+.app-pattern {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('/brand/pattern/stayo-pattern-tile.svg');
+  background-size: 220px 220px;
+  opacity: 0.028;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+  /* Manrope's space glyph is narrow (~0.18em); words run together at small sizes. */
+  word-spacing: 0.08em;
+}
+
+/* Visible, on-brand focus ring for keyboard users. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--color-marigold);
+  outline-offset: 3px;
+  border-radius: 0.75rem;
+}
+
+/* Notebook paper: faint ruled lines for cards that want them. */
+.paper-lined {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    color-mix(in srgb, var(--color-line) 55%, transparent) 31px,
+    color-mix(in srgb, var(--color-line) 55%, transparent) 32px
+  );
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Motion is opt-out by default: when users ask for less, we give none. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+dialog::backdrop {
+  background: rgb(47 47 47 / 0.45);
 }

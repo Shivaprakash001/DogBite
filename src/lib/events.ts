@@ -9,7 +9,7 @@ const ENDPOINT = '/api/events';
 const FLUSH_MS = 2000;
 const MAX_BATCH = 25;
 
-let queue: ClientEvent[] = [];
+const queue: ClientEvent[] = [];
 let timer: ReturnType<typeof setTimeout> | null = null;
 let listening = false;
 
