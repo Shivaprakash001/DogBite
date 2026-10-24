@@ -12,7 +12,7 @@ import { useToast } from '@/components/ui/Toast';
 import { QUIZ } from '@/config';
 import { useCopy } from '@/hooks/useCopy';
 import { ApiClientError, api } from '@/lib/api-client';
-import type { DraftState } from '@/lib/api-types';
+import type { DraftState, HostelDTO } from '@/lib/api-types';
 import { track } from '@/lib/events';
 import { AnswerStep } from './AnswerStep';
 import { MascotPicker } from './MascotPicker';
@@ -25,9 +25,10 @@ interface CreatorFlowProps {
   initial: DraftState;
   consented: boolean;
   minor: boolean;
+  suggestedHostel?: HostelDTO | null;
 }
 
-export function CreatorFlow({ initial, consented: initialConsent, minor }: CreatorFlowProps) {
+export function CreatorFlow({ initial, consented: initialConsent, minor, suggestedHostel = null }: CreatorFlowProps) {
   const copy = useCopy();
   const toast = useToast();
   const router = useRouter();
@@ -86,7 +87,7 @@ export function CreatorFlow({ initial, consented: initialConsent, minor }: Creat
     case 'mascot':
       return <MascotPicker name={state.name ?? ''} busy={busy} onPick={(gender) => void call('mascot', { gender })} />;
     case 'hostel':
-      return <HostelPicker busy={busy} onDone={(h) => void call('hostel', { hostelId: h?.id ?? null })} />;
+      return <HostelPicker busy={busy} suggested={suggestedHostel} onDone={(h) => void call('hostel', { hostelId: h?.id ?? null })} />;
     case 'pick':
       return (
         <PickerList

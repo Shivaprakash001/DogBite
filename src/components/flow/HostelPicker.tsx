@@ -18,11 +18,13 @@ import { msSince } from '@/lib/time';
 interface HostelPickerProps {
   onDone: (hostel: HostelDTO | null) => void;
   busy?: boolean;
+  /** Pre-suggested hostel (e.g. arriving from a hostel page). */
+  suggested?: HostelDTO | null;
 }
 
 const TYPE_EMOJI: Record<HostelDTO['type'], string> = { boys: '👦', girls: '👧', coed: '🧑‍🤝‍🧑', unknown: '🏠' };
 
-export function HostelPicker({ onDone, busy }: HostelPickerProps) {
+export function HostelPicker({ onDone, busy, suggested = null }: HostelPickerProps) {
   const copy = useCopy();
   const startedAt = useRef(0);
   const [city, setCity] = useState(DEFAULT_CITY);
@@ -62,6 +64,26 @@ export function HostelPicker({ onDone, busy }: HostelPickerProps) {
         </h1>
         <p className="mt-1 text-ink-soft">{copy.hostel.sub}</p>
       </div>
+
+      {suggested && (
+        <button
+          type="button"
+          onClick={() => pick(suggested)}
+          disabled={busy}
+          className="flex min-h-16 w-full items-center gap-3 rounded-2xl bg-latte px-4 py-3 text-left ring-4 ring-terracotta"
+        >
+          <span aria-hidden className="text-2xl">
+            ⭐
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm font-bold text-terracotta">{copy.hostel.suggested}</span>
+            <span className="block truncate font-display font-extrabold">{suggested.name}</span>
+            <span className="block truncate text-sm text-ink-soft">
+              {suggested.area}, {suggested.city}
+            </span>
+          </span>
+        </button>
+      )}
 
       <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4" role="radiogroup" aria-label={copy.hostel.cityLabel}>
         {Object.keys(CITIES).map((c) => (

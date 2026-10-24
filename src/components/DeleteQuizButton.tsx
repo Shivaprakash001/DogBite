@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { useCopy } from '@/hooks/useCopy';
 import { api } from '@/lib/api-client';
 
-export function DeleteQuizButton({ slug, onDeleted }: { slug: string; onDeleted?: () => void }) {
+export function DeleteQuizButton({ slug, after = 'home' }: { slug: string; after?: 'home' | 'refresh' }) {
   const copy = useCopy();
   const toast = useToast();
   const router = useRouter();
@@ -22,7 +22,7 @@ export function DeleteQuizButton({ slug, onDeleted }: { slug: string; onDeleted?
         try {
           await api.del(`/api/quizzes/${slug}`);
           toast(copy.done.deleted, 'success');
-          if (onDeleted) onDeleted();
+          if (after === 'refresh') router.refresh();
           else router.push('/');
         } catch {
           toast(copy.common.error, 'error');

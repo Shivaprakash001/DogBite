@@ -8,6 +8,7 @@ import type { HostelDTO } from '@/lib/api-types';
 import { renderQuestionText } from '@/lib/text';
 import { db, schema } from '../db';
 import { toHostelDTO, type Hostel } from './hostels';
+import { getCopy } from '@/content/copy';
 import { loadBank } from './questions';
 
 // Hostel-level aggregates. Everything public goes through the k-anonymity floor in
@@ -192,7 +193,8 @@ export async function hostelPage(hostel: Hostel): Promise<HostelPageData> {
       if (!shares?.length) continue;
       const q = bank.byKey.get(key)!;
       const top = q.options.find((o) => o.key === shares[0].key)!;
-      funStats.push({ question: renderQuestionText(q.textTemplate, 'this hostel', 'they'), label: top.label, emoji: top.emoji, pct: shares[0].pct });
+      const text = renderQuestionText(q.textTemplate, getCopy().hostelPage.statSubject, 'they');
+      funStats.push({ question: text.charAt(0).toUpperCase() + text.slice(1), label: top.label, emoji: top.emoji, pct: shares[0].pct });
     }
     funStats.sort((a, b) => b.pct - a.pct);
   }
