@@ -1,0 +1,43 @@
+/*
+ * Stayo design tokens. A brand change should be a change in this file.
+ * src/styles/theme.ts mirrors the colours for places CSS can't reach (OG images);
+ * a unit test keeps them in sync.
+ */
+@theme {
+  /* Stayo terracotta palette */
+  --color-clay: #b46a55;
+  --color-terracotta: #a45d44;
+  --color-terracotta-deep: #7e4331;
+  --color-dusty: #d2986c;
+  --color-latte: #ebd9c4;
+  --color-charcoal: #2f2f2f;
+  --color-cream: #f7f3ee;
+
+  /* Supporting neutrals */
+  --color-paper: #fffdf9;
+  --color-sand: #f1e6d8;
+  --color-line: #e3d3c0;
+  --color-ink-soft: #6b5f57;
+
+  /* One bright accent for highlights, badges and the score */
+  --color-marigold: #f2b33d;
+  --color-marigold-deep: #c98a17;
+
+  /* Feedback: always paired with ✓ / ✗ icons, never colour alone */
+  --color-correct: #2e7d4f;
+  --color-correct-soft: #dff1e5;
+  --color-wrong: #c23b3b;
+  --color-wrong-soft: #fbe3e1;
+
+  --font-display: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.5rem;
+  --radius-chunky: 1.125rem;
+
+  --shadow-soft: 0 10px 30px -14px rgb(47 47 47 / 0.28);
+  --shadow-card: 0 2px 0 0 var(--color-line), 0 12px 28px -18px rgb(47 47 47 / 0.35);
+  --shadow-chunky: 0 5px 0 0 var(--color-terracotta-deep);
+  --shadow-chunky-light: 0 5px 0 0 var(--color-line);
+  --shadow-chunky-marigold: 0 5px 0 0 var(--color-marigold-deep);
+}
