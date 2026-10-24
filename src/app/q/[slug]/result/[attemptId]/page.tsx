@@ -83,7 +83,7 @@ async function ResultInner({ params }: { params: Params }) {
         {mine ? (
           <Card tone="clay">
             <p className="font-display text-sm font-bold text-white/80">{copy.result.yourTurn}</p>
-            <p className="mt-0.5 font-display text-xl font-extrabold text-white">{fmt(copy.quizLanding.title, { creator: copy.common.you })}</p>
+            <p className="mt-0.5 font-display text-xl font-extrabold text-white">{copy.result.yourTurnSub}</p>
             <ButtonLink href="/create" variant="accent" size="lg" className="mt-3">
               ✍️ {copy.result.createCta}
             </ButtonLink>

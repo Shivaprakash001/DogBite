@@ -163,6 +163,7 @@ const en = {
   result: {
     scoreLabel: 'Your score',
     yourTurn: "Now it's your turn",
+    yourTurnSub: 'Find out who actually knows you',
     createCta: 'Create your own quiz',
     playCta: 'Take this quiz',
     hostelCta: 'See how your hostel ranks in {area}',
@@ -261,6 +262,13 @@ const en = {
     myQuizzes: 'Your quizzes',
     noQuizzes: 'You have not made a quiz yet.',
     contact: 'Questions? Write to privacy@stayo.in',
+  },
+  og: {
+    kicker: 'Hostel friendship test',
+    quizSub: '10 questions about {creator}’s hostel life',
+    resultTitle: '{player} on {creator}’s quiz',
+    resultSub: 'Can you beat that?',
+    storyFooter: 'Take the quiz · link in bio',
   },
   footer: {
     madeBy: 'Made with 🧡 by Stayo',
