@@ -11,9 +11,16 @@ Animation and audio are deferred (§10). These seams exist so they can be added 
   keyed on `[data-stage]`, or subscribe to the `reveal.stage` UI event.
 - Mascot moods per stage: suspense = `pulling` (the rope pull) + `shocked`; reveal/result = the tier's mood from `src/content/results.ts`.
 
-## Mascot
+## Verdict scene (implemented with light CSS)
 
-- `<Mascot mood gender animation />` (`src/components/ui/Mascot.tsx`). `animation` is reserved and rendered as `data-animation`; `data-mood` is set
+- `src/components/scene/VerdictScene.tsx` renders the guard pup's reaction on the result page; root has `data-verdict="chase|growl|sniff|friendly|love"`.
+- Keyframes live in `src/app/globals.css` (`.anim-chase`, `.anim-hop`, `.anim-hop-slow`, `.anim-wiggle`, `.anim-float`, `.anim-board-drop`).
+  Under `prefers-reduced-motion: reduce` they are removed entirely so the static composition shows.
+- Live guard mood during play: `src/components/scene/GuardStatus.tsx`, driven by `guardState(correct, wrong)`.
+
+## Mascot and characters
+
+- `<Character avatar mood animation />` (`src/components/ui/Character.tsx`) and `<Mascot mood animation />` (the guard pup). `animation` is reserved and rendered as `data-animation`; `data-mood` is set
   too. The SVGs have named groups (`head-group`, `tail`, `ear-left`, `eye-left`, `mouth`, …) that are useful animation targets once the SVG is
   inlined.
 

@@ -31,7 +31,7 @@ async function PlayInner({ params }: { params: PageProps<'/q/[slug]/play'>['para
     <PlayerFlow
       slug={slug}
       creatorName={quiz.creatorName}
-      creatorGender={quiz.gender}
+      creatorAvatar={quiz.avatar}
       consented={gate.consented}
       minor={gate.minor}
       resumeAttemptId={status.unfinishedId}

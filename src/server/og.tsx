@@ -4,13 +4,13 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
 import { ASSETS, type MascotMood } from '@/content/assets';
+import { characterSvg, type Avatar, type CharacterMood } from '@/content/characters';
 import { getCopy } from '@/content/copy';
-import { withAccessory } from '@/content/mascot-accessories';
-import type { Gender } from '@/content/types';
 import { THEME } from '@/styles/theme';
 
-// Shared renderer for Open Graph cards (1200×630) and Story images (1080×1920).
-// Assets are read from disk; next.config's outputFileTracingIncludes ships them.
+// Shared renderer for Open Graph cards (1200×630) and Story images (1080×1920):
+// the character plus the guard pup. Assets are read from disk; next.config's
+// outputFileTracingIncludes ships them.
 
 const C = THEME.colors;
 const root = process.cwd();
@@ -28,27 +28,30 @@ function fonts() {
   return fontsPromise;
 }
 
-async function svgDataUri(publicPath: string, transform?: (svg: string) => string): Promise<string> {
-  let svg = await readFile(join(root, 'public', publicPath), 'utf8');
-  if (transform) svg = transform(svg);
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
-}
+const toDataUri = (svg: string) => `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
+const publicSvg = async (path: string) => toDataUri(await readFile(join(root, 'public', path), 'utf8'));
 
 export interface CardInput {
   kicker: string;
   title: string;
-  /** Word inside the title to underline in marigold. */
+  /** Phrase inside the title to underline in marigold. */
   highlight?: string;
   subtitle?: string;
-  mood: MascotMood;
-  gender: Gender | null;
-  score?: number | null;
+  avatar: Avatar;
+  characterMood: CharacterMood;
+  dogMood: MascotMood;
+  /** Compatibility percentage, shown big when present. */
+  pct?: number | null;
   footer?: string;
 }
 
 function Title({ text, highlight, size, center = false }: { text: string; highlight?: string; size: number; center?: boolean }) {
-  // One flex item per word so satori can wrap; the highlight word gets a marker stroke.
+  // One flex item per word so satori can wrap; words of the highlight phrase get a marker stroke.
   const words = text.split(/\s+/);
+  const bare = (w: string) => w.replace(/[^\p{L}\p{N}]/gu, '');
+  const hw = highlight ? highlight.split(/\s+/) : [];
+  const start = hw.length ? words.findIndex((_, i) => hw.every((h, j) => bare(words[i + j] ?? '') === bare(h))) : -1;
+  const marked = (i: number) => start !== -1 && i >= start && i < start + hw.length;
   return (
     <div
       style={{
@@ -64,13 +67,13 @@ function Title({ text, highlight, size, center = false }: { text: string; highli
       }}
     >
       {words.map((w, i) =>
-        highlight && w.replace(/[^\p{L}\p{N}]/gu, '') === highlight ? (
+        marked(i) ? (
           <span key={i} style={{ display: 'flex', position: 'relative' }}>
             <span
               style={{
                 position: 'absolute',
-                left: 0,
-                right: 0,
+                left: -4,
+                right: -4,
                 bottom: size * 0.1,
                 height: size * 0.26,
                 background: C.marigold,
@@ -88,65 +91,78 @@ function Title({ text, highlight, size, center = false }: { text: string; highli
   );
 }
 
-async function assets(input: CardInput) {
-  const mascotPath = ASSETS[`mascot.${input.mood}`];
-  const [mascot, logo] = await Promise.all([svgDataUri(mascotPath, (svg) => withAccessory(svg, input.gender, input.mood)), svgDataUri(ASSETS['logo.mark'])]);
-  return { mascot, logo };
+async function art(input: CardInput) {
+  const [dog, logo] = await Promise.all([publicSvg(ASSETS[`mascot.${input.dogMood}`]), publicSvg(ASSETS['logo.mark'])]);
+  return { character: toDataUri(characterSvg(input.avatar, input.characterMood)), dog, logo };
 }
 
-export async function renderOgCard(input: CardInput): Promise<ImageResponse> {
+function Brand({ logo, scale = 1 }: { logo: string; scale?: number }) {
   const copy = getCopy();
-  const { mascot, logo } = await assets(input);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 14 * scale }}>
+      <img src={logo} width={40 * scale} height={54 * scale} alt="" />
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span style={{ fontSize: 30 * scale, fontWeight: 800, color: C.charcoal }}>{copy.brand.product}</span>
+        <span style={{ fontSize: 20 * scale, fontWeight: 700, color: C.terracotta }}>{copy.brand.by}</span>
+      </div>
+    </div>
+  );
+}
+
+function Pill({ text, size }: { text: string; size: number }) {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignSelf: 'flex-start',
+        background: C.paper,
+        border: `3px solid ${C.line}`,
+        borderRadius: 999,
+        padding: `${size * 0.33}px ${size * 0.8}px`,
+        color: C.terracotta,
+        fontSize: size,
+        fontWeight: 800,
+      }}
+    >
+      {text}
+    </div>
+  );
+}
+
+const CACHE = { 'cache-control': 'public, max-age=300, s-maxage=3600' };
+
+export async function renderOgCard(input: CardInput): Promise<ImageResponse> {
+  const { character, dog, logo } = await art(input);
   return new ImageResponse(
     <div style={{ width: '100%', height: '100%', display: 'flex', background: C.cream, fontFamily: 'Manrope', padding: 56, position: 'relative' }}>
       <div style={{ position: 'absolute', top: 22, left: 22, right: 22, bottom: 22, border: `4px dashed ${C.line}`, borderRadius: 40, display: 'flex' }} />
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: 640, paddingLeft: 24 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-          <div
-            style={{
-              display: 'flex',
-              alignSelf: 'flex-start',
-              background: C.paper,
-              border: `3px solid ${C.line}`,
-              borderRadius: 999,
-              padding: '8px 20px',
-              color: C.terracotta,
-              fontSize: 24,
-              fontWeight: 800,
-            }}
-          >
-            {input.kicker}
-          </div>
-          {input.score != null && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Pill text={input.kicker} size={24} />
+          {input.pct != null && (
             <div style={{ display: 'flex', alignItems: 'baseline', color: C.terracotta, fontWeight: 800 }}>
-              <span style={{ fontSize: 150, lineHeight: 1 }}>{input.score}</span>
-              <span style={{ fontSize: 70, color: C['ink-soft'] }}>/10</span>
+              <span style={{ fontSize: 140, lineHeight: 1 }}>{input.pct}</span>
+              <span style={{ fontSize: 70, color: C['ink-soft'] }}>%</span>
             </div>
           )}
-          <Title text={input.title} highlight={input.highlight} size={input.score != null ? 54 : 76} />
+          <Title text={input.title} highlight={input.highlight} size={input.pct != null ? 54 : 66} />
           {input.subtitle && <div style={{ display: 'flex', fontSize: 30, color: C['ink-soft'], fontWeight: 700 }}>{input.subtitle}</div>}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <img src={logo} width={40} height={54} alt="" />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: 30, fontWeight: 800, color: C.charcoal }}>{copy.brand.product}</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: C.terracotta }}>{copy.brand.by}</span>
-          </div>
-        </div>
+        <Brand logo={logo} />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-        <div style={{ display: 'flex', width: 440, height: 440, borderRadius: 999, background: C.latte, alignItems: 'center', justifyContent: 'center' }}>
-          <img src={mascot} width={400} height={400} alt="" />
+        <div style={{ display: 'flex', width: 440, height: 440, borderRadius: 999, background: C.latte, alignItems: 'flex-end', justifyContent: 'center' }}>
+          <img src={character} width={330} height={330} alt="" style={{ marginRight: -70, marginBottom: 24 }} />
+          <img src={dog} width={210} height={210} alt="" style={{ marginBottom: 24 }} />
         </div>
       </div>
     </div>,
-    { width: 1200, height: 630, fonts: await fonts(), headers: { 'cache-control': 'public, max-age=300, s-maxage=3600' } },
+    { width: 1200, height: 630, fonts: await fonts(), headers: CACHE },
   );
 }
 
 export async function renderStoryCard(input: CardInput): Promise<ImageResponse> {
-  const copy = getCopy();
-  const { mascot, logo } = await assets(input);
+  const { character, dog, logo } = await art(input);
   return new ImageResponse(
     <div
       style={{
@@ -157,48 +173,36 @@ export async function renderStoryCard(input: CardInput): Promise<ImageResponse> 
         alignItems: 'center',
         background: C.cream,
         fontFamily: 'Manrope',
-        padding: '140px 80px 120px',
+        padding: '130px 80px 110px',
       }}
     >
+      <Pill text={input.kicker} size={38} />
       <div
         style={{
           display: 'flex',
-          background: C.paper,
-          border: `4px solid ${C.line}`,
-          borderRadius: 999,
-          padding: '14px 34px',
-          color: C.terracotta,
-          fontSize: 38,
-          fontWeight: 800,
-        }}
-      >
-        {input.kicker}
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          width: 760,
-          height: 760,
-          marginTop: 70,
-          borderRadius: 999,
+          width: 800,
+          height: 680,
+          marginTop: 60,
+          borderRadius: 120,
           background: C.latte,
-          alignItems: 'center',
+          alignItems: 'flex-end',
           justifyContent: 'center',
         }}
       >
-        <img src={mascot} width={700} height={700} alt="" />
+        <img src={character} width={540} height={540} alt="" style={{ marginRight: -120, marginBottom: 30 }} />
+        <img src={dog} width={360} height={360} alt="" style={{ marginBottom: 30 }} />
       </div>
-      {input.score != null && (
+      {input.pct != null && (
         <div style={{ display: 'flex', alignItems: 'baseline', color: C.terracotta, fontWeight: 800, marginTop: 40 }}>
-          <span style={{ fontSize: 220, lineHeight: 1 }}>{input.score}</span>
-          <span style={{ fontSize: 100, color: C['ink-soft'] }}>/10</span>
+          <span style={{ fontSize: 200, lineHeight: 1 }}>{input.pct}</span>
+          <span style={{ fontSize: 100, color: C['ink-soft'] }}>%</span>
         </div>
       )}
-      <div style={{ display: 'flex', marginTop: 40, justifyContent: 'center', width: '100%' }}>
-        <Title text={input.title} highlight={input.highlight} size={input.score != null ? 74 : 104} center />
+      <div style={{ display: 'flex', marginTop: 36, justifyContent: 'center', width: '100%' }}>
+        <Title text={input.title} highlight={input.highlight} size={input.pct != null ? 72 : 88} center />
       </div>
       {input.subtitle && (
-        <div style={{ display: 'flex', marginTop: 28, fontSize: 44, color: C['ink-soft'], fontWeight: 700, textAlign: 'center' }}>{input.subtitle}</div>
+        <div style={{ display: 'flex', marginTop: 26, fontSize: 44, color: C['ink-soft'], fontWeight: 700, textAlign: 'center' }}>{input.subtitle}</div>
       )}
       <div style={{ flex: 1, display: 'flex' }} />
       {input.footer && (
@@ -217,14 +221,8 @@ export async function renderStoryCard(input: CardInput): Promise<ImageResponse> 
           {input.footer}
         </div>
       )}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-        <img src={logo} width={56} height={76} alt="" />
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: 44, fontWeight: 800, color: C.charcoal }}>{copy.brand.product}</span>
-          <span style={{ fontSize: 30, fontWeight: 700, color: C.terracotta }}>{copy.brand.by}</span>
-        </div>
-      </div>
+      <Brand logo={logo} scale={1.4} />
     </div>,
-    { width: 1080, height: 1920, fonts: await fonts(), headers: { 'cache-control': 'public, max-age=300, s-maxage=3600' } },
+    { width: 1080, height: 1920, fonts: await fonts(), headers: CACHE },
   );
 }

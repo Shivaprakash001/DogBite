@@ -1,3 +1,4 @@
+import type { Avatar } from '@/content/characters';
 import type { Gender, ObjectiveTag, QuestionKind } from '@/content/types';
 
 // REST contract types shared by route handlers and the browser. If the backend
@@ -31,7 +32,7 @@ export interface HostelDTO {
   type: 'boys' | 'girls' | 'coed' | 'unknown';
 }
 
-export type CreatorStep = 'name' | 'mascot' | 'hostel' | 'pick' | 'answer' | 'publish';
+export type CreatorStep = 'name' | 'character' | 'hostel' | 'pick' | 'answer' | 'publish';
 
 export interface DraftQuestionDTO {
   quizQuestionId: number;
@@ -47,6 +48,7 @@ export interface DraftState {
   step: CreatorStep;
   name: string | null;
   gender: Gender | null;
+  avatar: Avatar | null;
   hostel: HostelDTO | null;
   slug: string | null;
   candidates: CandidateDTO[];

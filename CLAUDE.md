@@ -1,6 +1,9 @@
 # CLAUDE.md — Stayo Hostel Quiz ("Roomie Quiz") Build Brief
 
 > Implementation status, choices that differ from this brief, and their reasons are recorded in `docs/decisions.md`. Read it alongside this file.
+> **Chat overrides (2026-10-24):** the hook is “Will {name} kick you out of the room?” (roommate compatibility), not “block you”. Main
+> characters are a boy and a girl; the Stayo dog is the creator's room-guard companion that pulls the scoreboard and chases (low score)
+> or loves (high score) the player.
 > Next.js 16 specifics: see `AGENTS.md` (read the bundled docs in `node_modules/next/dist/docs/` before using Next APIs).
 
 You are the lead engineer and product-minded builder for **Stayo Hostel Quiz**, a viral, mascot-led quiz game for college students who live in hostels. Build the full engine, data layer, flows and UI from scratch, following this brief. Animations and sound effects are **deferred**: build clean hook points for them (Section 10) but do not implement them yet.

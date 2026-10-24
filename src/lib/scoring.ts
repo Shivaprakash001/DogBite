@@ -82,3 +82,21 @@ export function rankScoreboard(rows: readonly BoardRow[]): (BoardRow & { rank: n
   }
   return [...best.values()].sort(compareBoardRows).map((row, i) => ({ ...row, rank: i + 1 }));
 }
+
+/** Score shown as roommate compatibility, e.g. 7/10 → 70. */
+export function compatibilityPct(score: number, total = 10): number {
+  return total > 0 ? Math.round((Math.max(0, Math.min(score, total)) / total) * 100) : 0;
+}
+
+export type GuardState = 'watching' | 'wagging' | 'suspicious' | 'growling';
+
+/**
+ * The creator's guard pup reacts live while a friend plays: the more wrong
+ * answers, the closer it gets to chasing them out. Keeps players curious to the end.
+ */
+export function guardState(correct: number, wrong: number): { state: GuardState; mood: 'neutral' | 'happy' | 'confused' | 'angry' } {
+  if (wrong >= 5) return { state: 'growling', mood: 'angry' };
+  if (wrong >= 3) return { state: 'suspicious', mood: 'confused' };
+  if (correct >= 3 && wrong <= 1) return { state: 'wagging', mood: 'happy' };
+  return { state: 'watching', mood: 'neutral' };
+}

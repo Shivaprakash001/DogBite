@@ -1,71 +1,90 @@
 import type { MascotMood } from './assets';
+import type { CharacterMood } from './characters';
 
 // TODO(content): tier copy is a first draft — playful, never mean.
+// The guard pup belongs to the quiz creator. At the reveal it pulls the
+// scoreboard down, then reacts to the player: chases them out on a very low
+// score, loves them on a high one.
+
+/** What the guard pup does to the player on the result scene. */
+export type Verdict = 'chase' | 'growl' | 'sniff' | 'friendly' | 'love';
 
 export interface ResultTier {
-  id: 'stranger' | 'neighbour' | 'floormate' | 'roomie' | 'certified';
+  id: 'kicked_out' | 'corridor' | 'probation' | 'approved' | 'soulmates';
   min: number;
   max: number;
   title: string;
-  /** 2–3 variants so repeat plays don't feel stale. {creator} is replaced at render. */
+  /** 2–3 variants so repeat plays don't feel stale. {creator}, {dog} are replaced at render. */
   messages: string[];
-  mood: MascotMood;
-  /** Caption pre-filled into share actions. {score}, {creator}. */
+  verdict: Verdict;
+  dogMood: MascotMood;
+  playerMood: CharacterMood;
+  /** Caption pre-filled into share actions. {score}, {pct}, {creator}, {dog}. */
   shareCaption: string;
 }
 
 export const RESULT_TIERS: ResultTier[] = [
   {
-    id: 'stranger',
+    id: 'kicked_out',
     min: 0,
     max: 2,
-    title: 'Stranger in Room 204',
+    title: 'Kicked out! 🧳',
     messages: [
-      'Do you even know {creator}? Go knock on their door and say hi 👋',
-      '{creator} just asked the warden who you are. Time to fix that!',
-      'Zero hostel lore unlocked. Chai with {creator} tonight, compulsory.',
+      '{dog} chased you all the way to the hostel gate. Your bags are in the corridor.',
+      'Packed and out. {creator} already gave your bed to someone else.',
+      'You lasted one night. {dog} is still barking at your slippers.',
     ],
-    mood: 'sad',
-    shareCaption: 'I scored {score}/10 on {creator}’s hostel quiz… we need to talk 😭',
+    verdict: 'chase',
+    dogMood: 'angry',
+    playerMood: 'running',
+    shareCaption: '{pct}% compatible with {creator}… {dog} chased me out of the room 😭🧳',
   },
   {
-    id: 'neighbour',
+    id: 'corridor',
     min: 3,
     max: 4,
-    title: 'Corridor Acquaintance',
-    messages: ['You know {creator}’s face, not their 2 AM secrets.', 'Nodding terms only. One Maggi night would fix this.'],
-    mood: 'confused',
-    shareCaption: 'Only {score}/10 on {creator}’s quiz. Corridor friends only 😅',
+    title: 'Sleeping in the corridor',
+    messages: ['Not kicked out… yet. {dog} is growling at your mattress.', 'Corridor life: no fan, all mosquitoes. Try harder, roomie.'],
+    verdict: 'growl',
+    dogMood: 'confused',
+    playerMood: 'nervous',
+    shareCaption: 'Only {pct}% compatible with {creator}. I sleep in the corridor now 🦟',
   },
   {
-    id: 'floormate',
+    id: 'probation',
     min: 5,
     max: 6,
-    title: 'Same-Floor Friend',
-    messages: ['Solid! You’ve shared at least three canteen samosas with {creator}.', 'You know the basics. The deep lore is still locked 🔐'],
-    mood: 'thinking',
-    shareCaption: '{score}/10 on {creator}’s quiz. Same floor, same vibes 🙌',
+    title: 'Roommate on probation',
+    messages: ['{dog} is still sniffing you. One more Maggi night and you’re in.', 'You know the basics. {creator}’s deep lore is still locked 🔐'],
+    verdict: 'sniff',
+    dogMood: 'thinking',
+    playerMood: 'nervous',
+    shareCaption: '{pct}% compatible with {creator}. On probation, bed not confirmed 😅',
   },
   {
-    id: 'roomie',
+    id: 'approved',
     min: 7,
     max: 8,
-    title: 'Basically a Roomie',
-    messages: ['You could pick {creator}’s chappals out of a pile of 40.', 'Practically roommates. {creator} owes you a treat.'],
-    mood: 'happy',
-    shareCaption: '{score}/10! I basically live in {creator}’s room 🏠',
+    title: 'Roommate approved ✅',
+    messages: ['{dog} wagged its tail. Your bed is safe.', 'You could pick {creator}’s chappals out of a pile of 40.'],
+    verdict: 'friendly',
+    dogMood: 'happy',
+    playerMood: 'happy',
+    shareCaption: '{pct}% compatible with {creator}! Roommate approved ✅',
   },
   {
-    id: 'certified',
+    id: 'soulmates',
     min: 9,
     max: 10,
-    title: 'Certified Roommate 🏆',
+    title: 'Bunk-bed soulmates 🏆',
     messages: [
+      '{dog} won’t stop licking your face. You’re family now.',
+      '{creator} would share their last Maggi with you. That’s love.',
       'You know {creator} better than their mom does. Suspicious, honestly.',
-      'Hostel legend status. {creator} can never block you now.',
-      'Are you… {creator}’s second brain?',
     ],
-    mood: 'celebrating',
-    shareCaption: '{score}/10 on {creator}’s quiz 🏆 Certified roommate. Beat that.',
+    verdict: 'love',
+    dogMood: 'love',
+    playerMood: 'celebrating',
+    shareCaption: '{pct}% compatible with {creator} 🏆 Bunk-bed soulmates. Beat that.',
   },
 ];

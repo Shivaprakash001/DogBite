@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { QUIZ } from '@/config';
 import { validateDisplayName } from '@/lib/moderation';
 import { ApiError, guardWrite, limit, ok, parseBody, route } from '@/server/http';
-import { answerQuestion, confirmPicks, publishDraft, setHostel, setMascot, shuffleCandidates, skipQuestion, startDraft } from '@/server/repos/creator';
+import { answerQuestion, confirmPicks, publishDraft, setCharacter, setHostel, shuffleCandidates, skipQuestion, startDraft } from '@/server/repos/creator';
 
 const key = z
   .string()
@@ -11,7 +11,7 @@ const key = z
 
 const schemas = {
   start: z.object({ name: z.string().max(40) }),
-  mascot: z.object({ gender: z.enum(['he', 'she', 'they']) }),
+  character: z.object({ avatar: z.enum(['boy', 'girl']), gender: z.enum(['he', 'she', 'they']) }),
   hostel: z.object({ hostelId: z.uuid().nullable() }),
   shuffle: z.object({ keep: z.array(key).max(QUIZ.questionsPerQuiz).default([]) }),
   picks: z.object({ keys: z.array(key).length(QUIZ.questionsPerQuiz) }),
@@ -36,8 +36,10 @@ export const POST = route<RouteContext<'/api/create/[action]'>>(async (req, ctx)
       if (!v.ok) throw new ApiError(400, `name_${v.error}`);
       return ok(await startDraft(sid, v.value));
     }
-    case 'mascot':
-      return ok(await setMascot(sid, (await parseBody(req, schemas.mascot)).gender));
+    case 'character': {
+      const b = await parseBody(req, schemas.character);
+      return ok(await setCharacter(sid, b.avatar, b.gender));
+    }
     case 'hostel':
       return ok(await setHostel(sid, (await parseBody(req, schemas.hostel)).hostelId));
     case 'shuffle':

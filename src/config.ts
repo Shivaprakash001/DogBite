@@ -29,7 +29,7 @@ export const TIMING = {
   answerFeedbackMs: 900,
   creatorAdvanceMs: 250,
   /** Reveal state machine dwell times (see docs/animation-hooks.md). */
-  reveal: { idleMs: 0, suspenseMs: 1500, revealMs: 600 },
+  reveal: { idleMs: 0, suspenseMs: 1800, revealMs: 1800 },
 } as const;
 
 export const PRIVACY = {
@@ -44,14 +44,18 @@ export const HOSTELS = {
   searchLimit: 8,
 } as const;
 
+/**
+ * [max requests, window seconds]. Per-session limits do the real work; per-IP
+ * limits are only a backstop, sized for a whole hostel sharing one Wi-Fi IP.
+ */
 export const RATE_LIMITS = {
-  // [max requests, window seconds]
-  write: [60, 60],
-  publish: [10, 3600],
-  hostelAdd: [10, 3600],
-  contact: [5, 3600],
-  events: [240, 60],
-} as const satisfies Record<string, readonly [number, number]>;
+  write: { session: [60, 60], ip: [1500, 60] },
+  publish: { session: [10, 3600], ip: [300, 3600] },
+  hostelAdd: { session: [10, 3600], ip: [150, 3600] },
+  contact: { session: [5, 3600], ip: [60, 3600] },
+  events: { session: [240, 60], ip: [5000, 60] },
+  adminLogin: { session: [5, 3600], ip: [5, 3600] },
+} as const satisfies Record<string, { session: readonly [number, number]; ip: readonly [number, number] }>;
 
 /**
  * Feature decision thresholds (§15.6). "build" when every metric clears its bar,

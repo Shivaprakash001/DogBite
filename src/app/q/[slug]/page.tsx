@@ -8,9 +8,12 @@ import { FlowSkeleton } from '@/components/Skeleton';
 import { TrackArrival, TrackedLink } from '@/components/Tracked';
 import { ButtonLink, buttonClass } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Character } from '@/components/ui/Character';
+import { Highlight } from '@/components/ui/Highlight';
 import { Mascot } from '@/components/ui/Mascot';
 import { Sticker } from '@/components/ui/Sticker';
 import { fmt, getCopy } from '@/content/copy';
+import { compatibilityPct } from '@/lib/scoring';
 import { paths } from '@/lib/urls';
 import { getPublicQuiz, getScoreboard, playerStatus, playsCount } from '@/server/repos/play';
 import { currentGate } from '@/server/session';
@@ -47,13 +50,19 @@ async function QuizLanding({ params }: { params: PageProps<'/q/[slug]'>['params'
     <>
       <TrackArrival page="quiz" quizSlug={slug} />
       <section className="flex flex-col items-center pt-2 text-center">
-        <div className="relative">
-          <Mascot mood="thinking" gender={quiz.gender} size={170} priority />
-          <Sticker emoji="🤔" size={42} rotate={-10} className="top-2 -left-10" />
-          <Sticker emoji="🚫" size={40} rotate={12} className="-right-8 bottom-8" />
+        <span className="bg-paper font-display text-terracotta ring-line rounded-full px-3 py-1 text-xs font-extrabold tracking-wide uppercase ring-2">
+          {copy.landing.kicker}
+        </span>
+        <div className="relative mt-3 flex items-end">
+          <Character avatar={quiz.avatar} mood="thinking" size={160} label={quiz.creatorName} />
+          <Mascot mood="neutral" size={120} className="-ml-6" />
+          <Sticker emoji="🚪" size={44} rotate={-10} className="top-2 -left-10" />
+          <Sticker emoji="🛏️" size={40} rotate={12} className="top-6 -right-6" />
         </div>
-        <h1 className="mt-3 text-[2.4rem] leading-[1.05] font-extrabold text-balance">{fmt(copy.quizLanding.title, { creator: quiz.creatorName })}</h1>
-        <p className="text-ink-soft mt-3 max-w-[32ch] text-lg">{fmt(copy.quizLanding.sub, { creator: quiz.creatorName })}</p>
+        <h1 className="mt-3 text-[2.2rem] leading-[1.05] font-extrabold text-balance">
+          <Highlight text={fmt(copy.quizLanding.title, { creator: quiz.creatorName })} phrase={copy.quizLanding.titleHighlight} />
+        </h1>
+        <p className="text-ink-soft mt-3 max-w-[32ch] text-lg">{fmt(copy.quizLanding.sub, { creator: quiz.creatorName, dog: copy.dog.name })}</p>
         {quiz.hostel && (
           <Link
             href={paths.hostel(quiz.hostel.slug)}
@@ -75,7 +84,9 @@ async function QuizLanding({ params }: { params: PageProps<'/q/[slug]'>['params'
         ) : status.best ? (
           <>
             <Card tone="latte">
-              <p className="font-display text-center text-lg font-extrabold">{fmt(copy.quizLanding.playedAlready, { score: status.best.score })}</p>
+              <p className="font-display text-center text-lg font-extrabold">
+                {fmt(copy.quizLanding.playedAlready, { pct: compatibilityPct(status.best.score) })}
+              </p>
             </Card>
             <ButtonLink href={paths.result(slug, status.best.id)} size="lg">
               {copy.quizLanding.viewResult}

@@ -9,9 +9,9 @@ import { db } from './db';
 export type Bucket = keyof typeof RATE_LIMITS;
 
 /** Returns true when the request is allowed. */
-export async function hit(bucket: Bucket, subject: string): Promise<boolean> {
-  const [max, windowSec] = RATE_LIMITS[bucket];
-  const key = `${bucket}:${subject}`;
+export async function hit(bucket: Bucket, scope: 'session' | 'ip', subject: string): Promise<boolean> {
+  const [max, windowSec] = RATE_LIMITS[bucket][scope];
+  const key = `${bucket}:${scope}:${subject}`;
   const rows = await db().execute<{ count: number }>(sql`
     insert into rate_limits (key, window_start, count)
     values (${key}, now(), 1)

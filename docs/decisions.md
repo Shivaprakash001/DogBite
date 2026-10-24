@@ -13,13 +13,24 @@ Short, dated notes on choices made while building Roomie Quiz. Newest at the bot
 - **REST route handlers instead of server actions** for every write. The contracts in `src/lib/api-types.ts` are what a FastAPI port would keep.
 - **`proxy.ts`** (Next 16's renamed middleware) only sets cookies: anonymous session id, first-touch `ref` and `utm_source`. No DB work in the proxy.
 - **Postgres-backed rate limiting** (`rate_limits` table, fixed window). No Redis needed for v1; swap `src/server/rate-limit.ts` if traffic grows.
+  Limits are **per session first; per-IP limits are a loose backstop** sized for a whole hostel behind one Wi-Fi NAT (an early version used
+  equal limits and would have blocked a hostel of friends playing at once).
 - **Local dev DB** runs in a container (`podman`/`docker`, port 54329). Any managed Postgres with `pg_trgm` works in production.
 
 ## Product and content
 
-- **One mascot, three accessories.** Stayo's brand mascot is a dog, so "bear/panda style cards" became Bow Pup (she), Cap Pup (he) and Bandana Pup (they).
-  Accessories are SVG overlays in the same 300×300 space (`src/content/mascot-accessories.ts`), shared by the UI and the OG renderer. Dedicated
-  per-gender art can be dropped into the asset manifest as `mascot.she.happy` etc. without touching components.
+- **2026-10-24 — Hook and cast changed (chat request, overrides §3/§6 defaults).** The hook is now _“Will {name} kick you out of the room?”_
+  with the kicker “Roommate compatibility test”, and scores read as compatibility % with room verdicts (Kicked out → Bunk-bed soulmates).
+  Main characters are a **boy and a girl** (`src/content/characters.ts`, drawn from parts in code until commissioned art exists;
+  `character.<avatar>.<mood>` keys in the asset manifest override them). The **Stayo pup is now the creator's room guard** (named Sheru,
+  `TODO(content)`): it reacts live while a friend plays (`guardState` in `lib/scoring.ts`), pulls the rope that drops the scoreboard in the
+  reveal, and on the result either chases the player out (very low score), growls, sniffs, wags, or showers them with love (high score).
+  Players also pick their character, one tap on the name screen, so they can see themselves being chased or hugged.
+- **Light CSS motion for the verdict** (chase, hop, wiggle, floating hearts, board drop) is the first use of the animation seams, because
+  the dog's reaction is now the payoff of the game. Reduced-motion users get the static composition (animations removed, not shortened).
+- **Pronouns are separate from character art:** the creator picks boy/girl art, pronouns default to he/she, with a “use they/them” toggle.
+
+- ~~One mascot, three accessories~~ (superseded the same day by the boy/girl characters above).
 - **Emoji tiles instead of photos** for answer cards. No licensed photos exist yet, and emoji keep the quiz screen light (perf budget §2.3).
   `PhotoCard` renders `/public/questions/<image>` automatically when an option gets an `image` in the seed.
 - **Creators see questions in the third person** ("What does Ravi do at 6 AM?"), exactly as friends will. One template per question, fewer strings.

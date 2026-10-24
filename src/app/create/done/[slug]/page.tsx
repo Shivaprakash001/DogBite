@@ -7,6 +7,7 @@ import { ShareActions } from '@/components/ShareActions';
 import { FlowSkeleton } from '@/components/Skeleton';
 import { ButtonLink } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Character } from '@/components/ui/Character';
 import { Mascot } from '@/components/ui/Mascot';
 import { Sticker } from '@/components/ui/Sticker';
 import { fmt, getCopy } from '@/content/copy';
@@ -34,14 +35,16 @@ async function DoneInner({ params }: { params: PageProps<'/create/done/[slug]'>[
   const url = absoluteUrl(paths.quiz(slug), { ref: gate.shareRef ?? slug });
   return (
     <section className="flex flex-1 flex-col gap-5 pt-2">
-      <div className="relative mx-auto mt-2">
-        <Mascot mood="celebrating" gender={quiz.gender} size={180} priority />
+      <div className="relative mx-auto mt-2 flex items-end">
+        <Character avatar={quiz.avatar} mood="celebrating" size={170} label={quiz.creatorName} />
+        <Mascot mood="love" size={130} className="-ml-6" priority />
         <Sticker emoji="🎉" size={46} rotate={-12} className="-top-1 -left-8" />
-        <Sticker emoji="🏠" size={40} rotate={10} className="top-8 -right-8" />
+        <Sticker emoji="🚪" size={40} rotate={10} className="top-4 -right-6" />
       </div>
       <div className="text-center">
         <h1 className="text-3xl font-extrabold">{copy.done.title}</h1>
         <p className="text-ink-soft mt-2">{copy.done.sub}</p>
+        <p className="font-display text-terracotta mt-2 text-sm font-extrabold">{fmt(copy.dog.introSub, { dog: copy.dog.name })}</p>
       </div>
       <Card>
         <p className="font-display text-ink-soft text-sm font-bold">{fmt(copy.quizLanding.title, { creator: quiz.creatorName })}</p>
@@ -49,7 +52,7 @@ async function DoneInner({ params }: { params: PageProps<'/create/done/[slug]'>[
       </Card>
       <ShareActions
         url={url}
-        caption={fmt(copy.done.caption, { url })}
+        caption={fmt(copy.done.caption, { url, dog: copy.dog.name })}
         title={fmt(copy.quizLanding.title, { creator: quiz.creatorName })}
         quizSlug={slug}
         hostelId={quiz.hostel?.id ?? null}

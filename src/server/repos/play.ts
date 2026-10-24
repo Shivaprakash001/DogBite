@@ -1,6 +1,7 @@
 import 'server-only';
 import { and, asc, desc, eq, isNotNull, sql } from 'drizzle-orm';
 import { QUIZ } from '@/config';
+import type { Avatar } from '@/content/characters';
 import type { Gender } from '@/content/types';
 import type { AnswerResultDTO, AttemptStartDTO, FinishDTO, HostelDTO, PlayQuestionDTO } from '@/lib/api-types';
 import { pickShownOptions, rankScoreboard, scoreAttempt, tierForScore, type BoardRow } from '@/lib/scoring';
@@ -18,6 +19,7 @@ export interface PublicQuiz {
   status: 'draft' | 'live' | 'deleted';
   creatorName: string;
   gender: Gender | null;
+  avatar: Avatar;
   creatorSessionId: string;
   hostel: HostelDTO | null;
   publishedAt: Date | null;
@@ -37,6 +39,7 @@ export async function getPublicQuiz(slug: string): Promise<PublicQuiz | null> {
     status: row.quiz.status,
     creatorName: row.creator.displayName,
     gender: row.creator.gender,
+    avatar: row.creator.avatar ?? 'boy',
     creatorSessionId: row.creator.sessionId,
     hostel: hostel ? toHostelDTO(hostel) : null,
     publishedAt: row.quiz.publishedAt,
@@ -131,7 +134,7 @@ async function buildAttemptPayload(attemptId: string, quiz: PublicQuiz): Promise
 export async function startAttempt(
   sid: string,
   slug: string,
-  input: { playerName: string; hostelId: string | null; hostelSkipped: boolean; device: string | null },
+  input: { playerName: string; playerAvatar: Avatar; hostelId: string | null; hostelSkipped: boolean; device: string | null },
 ): Promise<AttemptStartDTO> {
   const quiz = await getPublicQuiz(slug);
   if (!quiz || quiz.status !== 'live') throw new ApiError(404, 'quiz_not_found');
@@ -147,6 +150,7 @@ export async function startAttempt(
       quizId: quiz.id,
       sessionId: sid,
       playerName: input.playerName,
+      playerAvatar: input.playerAvatar,
       hostelId: input.hostelId,
       hostelSkipped: input.hostelSkipped,
       device: input.device,
@@ -242,6 +246,7 @@ export interface AttemptResult {
   attemptId: string;
   sessionId: string;
   playerName: string;
+  playerAvatar: Avatar;
   score: number;
   finished: boolean;
   playerHostel: HostelDTO | null;
@@ -261,6 +266,7 @@ export async function getAttemptResult(slug: string, attemptId: string): Promise
     attemptId,
     sessionId: attempt.sessionId,
     playerName: attempt.playerName,
+    playerAvatar: attempt.playerAvatar ?? 'boy',
     score: attempt.score ?? 0,
     finished: !!attempt.finishedAt,
     playerHostel: hostel ? toHostelDTO(hostel) : null,

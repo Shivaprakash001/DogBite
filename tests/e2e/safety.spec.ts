@@ -34,7 +34,7 @@ test('cross-site writes are rejected', async ({ page }) => {
 test('delete my data erases the quiz', async ({ page }) => {
   const slug = await createQuiz(page, 'Eraseme');
   await page.goto('/privacy');
-  await expect(page.getByRole('link', { name: 'Will Eraseme block you?' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Will Eraseme kick you out of the room?' })).toBeVisible();
   page.once('dialog', (d) => d.accept());
   await page.getByRole('button', { name: /delete everything/i }).click();
   await page.waitForURL('http://localhost:3000/');

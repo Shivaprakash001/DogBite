@@ -7,5 +7,12 @@ export const contentType = 'image/png';
 
 export default async function Image() {
   const copy = getCopy();
-  return renderOgCard({ kicker: copy.og.kicker, title: copy.landing.headline, highlight: copy.landing.headlineHighlight, mood: 'shocked', gender: 'she' });
+  return renderOgCard({
+    kicker: copy.landing.kicker,
+    title: copy.landing.headline,
+    highlight: copy.landing.headlineHighlight,
+    avatar: 'girl',
+    characterMood: 'happy',
+    dogMood: 'angry',
+  });
 }

@@ -22,6 +22,13 @@
       "when": 1792853073599,
       "tag": "0002_share_ref",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792856981674,
+      "tag": "0003_characters",
+      "breakpoints": true
     }
   ]
 }

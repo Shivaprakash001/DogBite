@@ -2,6 +2,7 @@ import 'server-only';
 import { randomBytes } from 'node:crypto';
 import { and, asc, desc, eq, sql } from 'drizzle-orm';
 import { QUIZ } from '@/config';
+import type { Avatar } from '@/content/characters';
 import type { Gender } from '@/content/types';
 import { isResearchTag } from '@/content/types';
 import { categoryFor, type CandidateDTO, type DraftQuestionDTO, type DraftState, type HostelDTO } from '@/lib/api-types';
@@ -90,14 +91,15 @@ export async function getDraftState(sid: string): Promise<DraftState> {
   const { creator, quiz } = draft;
   const hostel = creator.hostelId ? await getHostelById(creator.hostelId) : null;
   const base: DraftState = {
-    ...emptyState('mascot', null),
+    ...emptyState('character', null),
     name: creator.displayName,
     gender: creator.gender,
+    avatar: creator.avatar,
     hostel: hostel ? toHostelDTO(hostel) : null,
     slug: quiz.slug,
     shufflesLeft: Math.max(0, QUIZ.maxShuffles - quiz.shufflesUsed),
   };
-  if (!creator.gender) return base;
+  if (!creator.avatar || !creator.gender) return base;
   if (!creator.hostelDecided) return { ...base, step: 'hostel' };
 
   const bank = await loadBank();
@@ -124,6 +126,7 @@ function emptyState(step: DraftState['step'], suggestedName: string | null): Dra
     step,
     name: null,
     gender: null,
+    avatar: null,
     hostel: null,
     slug: null,
     candidates: [],
@@ -155,9 +158,9 @@ export async function startDraft(sid: string, name: string): Promise<DraftState>
   return getDraftState(sid);
 }
 
-export async function setMascot(sid: string, gender: Gender): Promise<DraftState> {
+export async function setCharacter(sid: string, avatar: Avatar, gender: Gender): Promise<DraftState> {
   const { creator } = await requireDraft(sid);
-  await db().update(schema.creators).set({ gender }).where(eq(schema.creators.id, creator.id));
+  await db().update(schema.creators).set({ avatar, gender }).where(eq(schema.creators.id, creator.id));
   return getDraftState(sid);
 }
 

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { acceptGate, createQuiz, enterName } from './helpers';
+import { acceptGate, createQuiz } from './helpers';
 
 // Critical flow (§16 Phase 1 "done when"): create a quiz → share link → a friend
 // plays it → both see correct scores.
@@ -12,10 +12,12 @@ test('create → share → play → result', async ({ browser }) => {
   const playerCtx = await browser.newContext();
   const player = await playerCtx.newPage();
   await player.goto(`/q/${slug}?ref=${slug}`);
-  await expect(player.getByRole('heading', { name: 'Will Ravi block you?' })).toBeVisible();
+  await expect(player.getByRole('heading', { name: 'Will Ravi kick you out of the room?' })).toBeVisible();
   await player.getByRole('link', { name: /start quiz/i }).click();
   await acceptGate(player);
-  await enterName(player, 'Priya');
+  await player.getByPlaceholder('Your name').fill('Priya');
+  await player.getByText('Girl', { exact: true }).click();
+  await player.getByRole('button', { name: 'Continue' }).click();
   await player.getByRole('button', { name: /skip, play solo/i }).click();
 
   for (let i = 0; i < 10; i++) {
@@ -26,8 +28,9 @@ test('create → share → play → result', async ({ browser }) => {
   }
 
   await player.waitForURL(/\/result\//, { timeout: 20_000 });
-  const scoreText = await player.locator('p', { hasText: '/10' }).first().innerText();
+  const scoreText = await player.getByText(/^\d+\/10 right$/).innerText();
   const score = Number(scoreText.split('/')[0]);
+  await expect(player.getByText(`${score * 10}%`, { exact: true }).first()).toBeVisible();
   expect(score).toBeGreaterThanOrEqual(0);
   expect(score).toBeLessThanOrEqual(10);
   await expect(player.getByRole('link', { name: /create your own quiz/i })).toBeVisible();

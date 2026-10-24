@@ -5,7 +5,7 @@ import { QuizMissing } from '@/components/quiz/QuizMissing';
 import { ScoreList } from '@/components/scoreboard/ScoreRow';
 import { FlowSkeleton } from '@/components/Skeleton';
 import { ButtonLink } from '@/components/ui/Button';
-import { Mascot } from '@/components/ui/Mascot';
+import { Character } from '@/components/ui/Character';
 import { fmt, getCopy } from '@/content/copy';
 import { paths } from '@/lib/urls';
 import { getPublicQuiz, getScoreboard, playerStatus } from '@/server/repos/play';
@@ -33,7 +33,7 @@ async function BoardInner({ params }: { params: PageProps<'/q/[slug]/board'>['pa
   return (
     <>
       <section className="flex items-center gap-3 pt-2">
-        <Mascot mood={rows.length ? 'happy' : 'sleepy'} gender={quiz.gender} size={84} />
+        <Character avatar={quiz.avatar} mood={rows.length ? 'happy' : 'idle'} size={84} label={quiz.creatorName} />
         <div>
           <h1 className="text-2xl leading-tight font-extrabold">{fmt(copy.board.title, { creator: quiz.creatorName })}</h1>
           <p className="text-ink-soft text-sm font-semibold">{fmt(copy.hostelPage.players, { n: rows.length })}</p>

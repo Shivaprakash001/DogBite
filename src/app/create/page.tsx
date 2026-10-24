@@ -26,6 +26,7 @@ async function CreateInner({ searchParams }: { searchParams: PageProps<'/create'
         step: 'name' as const,
         name: null,
         gender: null,
+        avatar: null,
         hostel: null,
         slug: null,
         candidates: [],

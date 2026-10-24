@@ -1,5 +1,5 @@
 import { fmt, getCopy } from '@/content/copy';
-import { tierForScore } from '@/lib/scoring';
+import { compatibilityPct, tierForScore } from '@/lib/scoring';
 import { renderStoryCard } from '@/server/og';
 import { getAttemptResult } from '@/server/repos/play';
 
@@ -12,11 +12,12 @@ export async function GET(_req: Request, ctx: RouteContext<'/q/[slug]/result/[at
   const tier = tierForScore(r.score);
   return renderStoryCard({
     kicker: tier.title,
-    score: r.score,
+    pct: compatibilityPct(r.score),
     title: fmt(copy.og.resultTitle, { player: r.playerName, creator: r.quiz.creatorName }),
     subtitle: copy.og.resultSub,
-    mood: tier.mood,
-    gender: r.quiz.gender,
+    avatar: r.playerAvatar,
+    characterMood: tier.playerMood,
+    dogMood: tier.dogMood,
     footer: copy.og.storyFooter,
   });
 }

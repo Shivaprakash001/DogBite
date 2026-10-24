@@ -13,9 +13,13 @@ interface NameStepProps {
   busy?: boolean;
   onSubmit: (name: string) => void;
   top?: ReactNode;
+  /** Extra fields shown under the name (e.g. the player's character). */
+  extra?: ReactNode;
+  /** Extra condition for enabling Continue. */
+  ready?: boolean;
 }
 
-export function NameStep({ title, hint, initial, busy, onSubmit, top }: NameStepProps) {
+export function NameStep({ title, hint, initial, busy, onSubmit, top, extra, ready = true }: NameStepProps) {
   const copy = useCopy();
   const id = useId();
   const [value, setValue] = useState(initial ?? '');
@@ -78,8 +82,9 @@ export function NameStep({ title, hint, initial, busy, onSubmit, top }: NameStep
           {messages[error]}
         </p>
       )}
+      {extra}
       <div className="mt-auto">
-        <Button type="submit" size="lg" disabled={busy || length === 0}>
+        <Button type="submit" size="lg" disabled={busy || length === 0 || !ready}>
           {copy.name.cta}
         </Button>
       </div>

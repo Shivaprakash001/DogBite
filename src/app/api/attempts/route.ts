@@ -6,6 +6,7 @@ import { startAttempt } from '@/server/repos/play';
 const body = z.object({
   slug: z.string().min(3).max(40),
   playerName: z.string().max(40),
+  playerAvatar: z.enum(['boy', 'girl']),
   hostelId: z.uuid().nullable(),
   hostelSkipped: z.boolean(),
 });
@@ -26,6 +27,7 @@ export const POST = route(async (req) => {
   return ok(
     await startAttempt(session.id, b.slug, {
       playerName: v.value,
+      playerAvatar: b.playerAvatar,
       hostelId: b.hostelId,
       hostelSkipped: b.hostelSkipped,
       device: deviceClass(req.headers.get('user-agent')),

@@ -7,15 +7,17 @@ import { HostelPicker } from '@/components/flow/HostelPicker';
 import { NameStep } from '@/components/flow/NameStep';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { Character } from '@/components/ui/Character';
 import { Mascot } from '@/components/ui/Mascot';
 import { useToast } from '@/components/ui/Toast';
 import { QUIZ } from '@/config';
+import { fmt } from '@/content/copy';
 import { useCopy } from '@/hooks/useCopy';
 import { ApiClientError, api } from '@/lib/api-client';
 import type { DraftState, HostelDTO } from '@/lib/api-types';
 import { track } from '@/lib/events';
 import { AnswerStep } from './AnswerStep';
-import { MascotPicker } from './MascotPicker';
+import { CharacterPicker } from './CharacterPicker';
 import { PickerList } from './PickerList';
 
 // Creator flow driver. The server owns the state; every step is one POST that
@@ -77,15 +79,20 @@ export function CreatorFlow({ initial, consented: initialConsent, minor, suggest
           hint={copy.name.hintCreator}
           initial={state.name ?? state.suggestedName}
           busy={busy}
-          top={<Mascot mood="waving" size={110} className="mx-auto" priority />}
+          top={
+            <div className="flex items-end justify-center">
+              <Character avatar="girl" mood="waving" size={104} />
+              <Character avatar="boy" mood="happy" size={104} className="-ml-6" />
+            </div>
+          }
           onSubmit={(name) => {
             track('name_submit', { length: [...name].length, flow: 'creator' });
             void call('start', { name });
           }}
         />
       );
-    case 'mascot':
-      return <MascotPicker name={state.name ?? ''} busy={busy} onPick={(gender) => void call('mascot', { gender })} />;
+    case 'character':
+      return <CharacterPicker name={state.name ?? ''} busy={busy} onPick={(avatar, gender) => void call('character', { avatar, gender })} />;
     case 'hostel':
       return <HostelPicker busy={busy} suggested={suggestedHostel} onDone={(h) => void call('hostel', { hostelId: h?.id ?? null })} />;
     case 'pick':
@@ -114,10 +121,14 @@ export function CreatorFlow({ initial, consented: initialConsent, minor, suggest
     case 'publish':
       return (
         <section className="flex flex-1 flex-col items-center gap-5 pt-6 text-center">
-          <Mascot mood="celebrating" gender={state.gender} size={180} priority />
+          <div className="flex items-end justify-center">
+            <Character avatar={state.avatar ?? 'boy'} mood="celebrating" size={170} label={state.name ?? undefined} />
+            <Mascot mood="love" size={140} className="-ml-6" />
+          </div>
           <Card className="w-full">
             <h1 className="text-2xl font-extrabold">{copy.creator.readyTitle}</h1>
-            <p className="text-ink-soft mt-2">{copy.creator.readySub}</p>
+            <p className="font-display text-terracotta mt-3 font-extrabold">{fmt(copy.dog.intro, { dog: copy.dog.name })}</p>
+            <p className="text-ink-soft mt-1">{fmt(copy.dog.introSub, { dog: copy.dog.name })}</p>
           </Card>
           <Button
             size="lg"

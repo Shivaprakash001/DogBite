@@ -26,7 +26,7 @@ export const POST = route<RouteContext<'/api/admin/[action]'>>(async (req, ctx) 
   if (!(action in schemas)) throw new ApiError(404, 'unknown_action');
 
   if (action === 'login') {
-    await limit(req, 'contact'); // 5 / hour per IP: slows key guessing
+    await limit(req, 'adminLogin'); // 5 / hour per IP: slows key guessing
     const { key } = await parseBody(req, schemas.login);
     const token = issueAdminToken(key);
     if (!token) throw new ApiError(401, 'bad_key');

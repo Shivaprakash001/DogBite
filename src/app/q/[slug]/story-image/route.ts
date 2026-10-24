@@ -9,12 +9,13 @@ export async function GET(_req: Request, ctx: RouteContext<'/q/[slug]/story-imag
   const quiz = await getPublicQuiz(slug);
   if (!quiz || quiz.status !== 'live') return new Response('Not found', { status: 404 });
   return renderStoryCard({
-    kicker: copy.og.kicker,
+    kicker: copy.landing.kicker,
     title: fmt(copy.quizLanding.title, { creator: quiz.creatorName }),
-    highlight: copy.landing.headlineHighlight,
-    subtitle: fmt(copy.og.quizSub, { creator: quiz.creatorName }),
-    mood: 'thinking',
-    gender: quiz.gender,
+    highlight: copy.quizLanding.titleHighlight,
+    subtitle: fmt(copy.og.quizSub, { dog: copy.dog.name }),
+    avatar: quiz.avatar,
+    characterMood: 'thinking',
+    dogMood: 'neutral',
     footer: copy.og.storyFooter,
   });
 }

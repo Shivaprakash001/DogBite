@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { RESULT_TIERS } from '@/content/results';
-import { pickShownOptions, rankScoreboard, scoreAttempt, tierForScore, tierMessage, type BoardRow } from '@/lib/scoring';
+import { compatibilityPct, guardState, pickShownOptions, rankScoreboard, scoreAttempt, tierForScore, tierMessage, type BoardRow } from '@/lib/scoring';
 
 describe('tierForScore', () => {
   it('covers every score 0..10 with exactly one tier', () => {
@@ -11,17 +11,22 @@ describe('tierForScore', () => {
   });
 
   it('maps the brief’s bands', () => {
-    expect(tierForScore(0).id).toBe('stranger');
-    expect(tierForScore(2).id).toBe('stranger');
-    expect(tierForScore(3).id).toBe('neighbour');
-    expect(tierForScore(6).id).toBe('floormate');
-    expect(tierForScore(8).id).toBe('roomie');
-    expect(tierForScore(10).id).toBe('certified');
+    expect(tierForScore(0).id).toBe('kicked_out');
+    expect(tierForScore(2).id).toBe('kicked_out');
+    expect(tierForScore(3).id).toBe('corridor');
+    expect(tierForScore(6).id).toBe('probation');
+    expect(tierForScore(8).id).toBe('approved');
+    expect(tierForScore(10).id).toBe('soulmates');
+  });
+
+  it('chases on a very low score and loves on a high one', () => {
+    expect(tierForScore(1)).toMatchObject({ verdict: 'chase', dogMood: 'angry', playerMood: 'running' });
+    expect(tierForScore(10)).toMatchObject({ verdict: 'love', dogMood: 'love' });
   });
 
   it('clamps out-of-range scores', () => {
-    expect(tierForScore(-3).id).toBe('stranger');
-    expect(tierForScore(42).id).toBe('certified');
+    expect(tierForScore(-3).id).toBe('kicked_out');
+    expect(tierForScore(42).id).toBe('soulmates');
   });
 
   it('picks a stable message per seed', () => {
@@ -116,5 +121,22 @@ describe('rankScoreboard', () => {
     const ranked = rankScoreboard([row('a', 4, 10_000, 1), row('a', 8, 20_000, 2), row('b', 6, 1, 1)]);
     expect(ranked).toHaveLength(2);
     expect(ranked[0]).toMatchObject({ sessionId: 'a', score: 8 });
+  });
+});
+
+describe('compatibilityPct', () => {
+  it('maps score to a percentage and clamps', () => {
+    expect(compatibilityPct(7)).toBe(70);
+    expect(compatibilityPct(0)).toBe(0);
+    expect(compatibilityPct(12)).toBe(100);
+  });
+});
+
+describe('guardState', () => {
+  it('escalates from watching to growling as wrong answers pile up', () => {
+    expect(guardState(0, 0).state).toBe('watching');
+    expect(guardState(3, 0).state).toBe('wagging');
+    expect(guardState(2, 3).state).toBe('suspicious');
+    expect(guardState(1, 5)).toEqual({ state: 'growling', mood: 'angry' });
   });
 });

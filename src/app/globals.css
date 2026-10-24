@@ -77,3 +77,88 @@ h3,
 dialog::backdrop {
   background: rgb(47 47 47 / 0.45);
 }
+
+/*
+ * Verdict scene motion (the guard pup's reaction). Reduced-motion users get the
+ * static composition: animation is removed, not just shortened, so nothing ends
+ * up off-screen.
+ */
+@keyframes chase-run {
+  from {
+    transform: translateX(70%);
+  }
+  to {
+    transform: translateX(-70%);
+  }
+}
+@keyframes hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14%);
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes float-up {
+  from {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-120px) scale(1.1);
+    opacity: 0;
+  }
+}
+@keyframes board-drop {
+  from {
+    transform: translateY(-40%);
+  }
+  70% {
+    transform: translateY(6%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.anim-chase {
+  animation: chase-run 2.6s linear infinite;
+}
+.anim-hop {
+  animation: hop 0.45s ease-in-out infinite;
+}
+.anim-hop-slow {
+  animation: hop 0.9s ease-in-out infinite;
+}
+.anim-wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+.anim-float {
+  animation: float-up 2.4s ease-out infinite;
+}
+.anim-board-drop {
+  animation: board-drop 0.7s cubic-bezier(0.3, 1.4, 0.6, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-chase,
+  .anim-hop,
+  .anim-hop-slow,
+  .anim-wiggle,
+  .anim-float,
+  .anim-board-drop {
+    animation: none !important;
+  }
+}

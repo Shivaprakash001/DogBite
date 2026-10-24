@@ -76,8 +76,8 @@ export function clientIp(req: NextRequest): string {
 
 export async function limit(req: NextRequest, bucket: Bucket, sid?: string | null): Promise<void> {
   const ipKey = keyedHash(clientIp(req), 'ip');
-  const checks = [hit(bucket, `ip:${ipKey}`)];
-  if (sid) checks.push(hit(bucket, `sid:${sid}`));
+  const checks = [hit(bucket, 'ip', ipKey)];
+  if (sid) checks.push(hit(bucket, 'session', sid));
   if ((await Promise.all(checks)).some((okay) => !okay)) throw new ApiError(429, 'rate_limited', 'Slow down a little 🙂');
 }
 

@@ -8,7 +8,7 @@ export async function acceptGate(page: Page) {
 }
 
 export async function enterName(page: Page, name: string) {
-  await page.getByRole('textbox', { name: /your name/i }).fill(name);
+  await page.getByPlaceholder('Your name').fill(name);
   await page.getByRole('button', { name: 'Continue' }).click();
 }
 
@@ -19,7 +19,7 @@ export async function createQuiz(page: Page, name: string): Promise<string> {
   await acceptGate(page);
   await enterName(page, name);
 
-  await page.getByRole('button', { name: /cap pup/i }).click();
+  await page.getByRole('button', { name: /^boy/i }).click();
 
   // Add a brand-new hostel through the "can't find mine" path.
   await page.getByRole('button', { name: /can't find mine/i }).click();

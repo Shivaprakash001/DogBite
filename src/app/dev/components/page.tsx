@@ -7,7 +7,11 @@ import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { Mascot } from '@/components/ui/Mascot';
 import { ProgressBar, ProgressPills } from '@/components/ui/ProgressPills';
 import { Sticker } from '@/components/ui/Sticker';
+import { VerdictScene } from '@/components/scene/VerdictScene';
+import { Character } from '@/components/ui/Character';
 import { MASCOT_MOODS } from '@/content/assets';
+import { AVATARS, CHARACTER_MOODS } from '@/content/characters';
+import { RESULT_TIERS } from '@/content/results';
 import { THEME } from '@/styles/theme';
 import { PhotoCardStates, SheetAndToastDemo } from './Interactive';
 
@@ -79,7 +83,20 @@ export default function ComponentsPage() {
         </div>
       </Block>
 
-      <Block title="Mascot: moods × gender accessory">
+      <Block title="Characters: boy / girl × mood">
+        <div className="grid grid-cols-4 gap-2">
+          {AVATARS.flatMap((a) =>
+            CHARACTER_MOODS.map((mood) => (
+              <div key={`${a}-${mood}`} className="bg-paper ring-line flex flex-col items-center rounded-xl p-1 text-xs ring-1">
+                <Character avatar={a} mood={mood} size={80} />
+                {a} · {mood}
+              </div>
+            )),
+          )}
+        </div>
+      </Block>
+
+      <Block title="Guard pup (creator's companion): moods">
         <div className="grid grid-cols-4 gap-2">
           {MASCOT_MOODS.map((mood) => (
             <div key={mood} className="bg-paper ring-line flex flex-col items-center rounded-xl p-1 text-xs ring-1">
@@ -88,11 +105,16 @@ export default function ComponentsPage() {
             </div>
           ))}
         </div>
-        <div className="bg-latte mt-3 flex justify-around rounded-xl p-2">
-          {(['she', 'he', 'they'] as const).map((g) => (
-            <div key={g} className="flex flex-col items-center text-xs font-bold">
-              <Mascot mood="happy" gender={g} size={96} decorative />
-              {g}
+      </Block>
+
+      <Block title="Verdict scenes">
+        <div className="flex flex-col gap-3">
+          {RESULT_TIERS.map((t, i) => (
+            <div key={t.id} className="bg-paper ring-line rounded-xl ring-1">
+              <VerdictScene tier={t} playerAvatar={i % 2 ? 'girl' : 'boy'} playerName="Player" dogName="Sheru" />
+              <p className="pb-2 text-center text-xs font-bold">
+                {t.verdict} · {t.title}
+              </p>
             </div>
           ))}
         </div>

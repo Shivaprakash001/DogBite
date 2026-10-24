@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { Footer } from '@/components/Footer';
 import { QuizMissing } from '@/components/quiz/QuizMissing';
 import { TeaserCard } from '@/components/quiz/TeaserCard';
+import { VerdictScene } from '@/components/scene/VerdictScene';
 import { ScoreList } from '@/components/scoreboard/ScoreRow';
 import { ShareActions } from '@/components/ShareActions';
 import { FlowSkeleton } from '@/components/Skeleton';
@@ -12,10 +13,8 @@ import { StayoExplainer } from '@/components/StayoExplainer';
 import { TrackView, TrackedLink } from '@/components/Tracked';
 import { ButtonLink, buttonClass } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Mascot } from '@/components/ui/Mascot';
-import { Sticker } from '@/components/ui/Sticker';
 import { fmt, getCopy } from '@/content/copy';
-import { tierForScore, tierMessage } from '@/lib/scoring';
+import { compatibilityPct, tierForScore, tierMessage } from '@/lib/scoring';
 import { absoluteUrl, paths } from '@/lib/urls';
 import { env } from '@/server/env';
 import { getAttemptResult, getScoreboard, playerStatus } from '@/server/repos/play';
@@ -29,7 +28,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const r = await getAttemptResult(slug, attemptId).catch(() => null);
   const copy = getCopy();
   if (!r || !r.finished) return { robots: { index: false } };
-  const title = fmt(copy.result.sharedTitle, { player: r.playerName, score: r.score, creator: r.quiz.creatorName });
+  const title = fmt(copy.result.sharedTitle, { player: r.playerName, pct: compatibilityPct(r.score), creator: r.quiz.creatorName });
   const description = tierForScore(r.score).title;
   return { title, description, openGraph: { title, description }, twitter: { title, description }, robots: { index: false } };
 }
@@ -53,7 +52,10 @@ async function ResultInner({ params }: { params: Params }) {
   const mine = gate.sid === result.sessionId;
   const { quiz } = result;
   const tier = tierForScore(result.score);
-  const message = fmt(tierMessage(tier, attemptId), { creator: quiz.creatorName });
+  const dog = copy.dog.name;
+  const pct = compatibilityPct(result.score);
+  const message = fmt(tierMessage(tier, attemptId), { creator: quiz.creatorName, dog });
+  const sharedTitle = fmt(copy.result.sharedTitle, { player: result.playerName, pct, creator: quiz.creatorName });
   const [board, teaser, status] = await Promise.all([getScoreboard(quiz.id, 10), mine ? pickTeaser() : null, playerStatus(quiz.id, gate.sid)]);
   const hostel = result.playerHostel;
   const shareUrl = absoluteUrl(paths.result(slug, attemptId), { ref: gate.shareRef ?? slug });
@@ -63,18 +65,15 @@ async function ResultInner({ params }: { params: Params }) {
     <>
       {mine && <TrackView name="result_view" props={{ score: result.score, tier: tier.id }} />}
       <section className="flex flex-col items-center pt-2 text-center">
-        <p className="font-display text-ink-soft text-sm font-bold">
-          {mine ? copy.result.scoreLabel : fmt(copy.result.sharedTitle, { player: result.playerName, score: result.score, creator: quiz.creatorName })}
-        </p>
-        <div className="relative mt-2">
-          <Mascot mood={tier.mood} gender={quiz.gender} size={170} priority />
-          {result.score >= 9 && <Sticker emoji="🏆" size={48} rotate={-12} className="top-0 -left-10" />}
-          {result.score <= 2 && <Sticker emoji="🚫" size={44} rotate={10} className="top-2 -right-8" />}
+        <p className="font-display text-ink-soft text-sm font-bold">{mine ? copy.result.scoreLabel : sharedTitle}</p>
+        <div className="mt-2 w-full">
+          <VerdictScene tier={tier} playerAvatar={result.playerAvatar} playerName={result.playerName} dogName={dog} />
         </div>
-        <p className="font-display text-terracotta mt-1 text-7xl leading-none font-extrabold tabular-nums">
-          {result.score}
-          <span className="text-ink-soft text-4xl">/10</span>
+        <p className="font-display text-terracotta mt-2 text-7xl leading-none font-extrabold tabular-nums">
+          {pct}
+          <span className="text-ink-soft text-4xl">%</span>
         </p>
+        <p className="font-display text-ink-soft mt-1 text-sm font-bold">{fmt(copy.result.scoreLine, { score: result.score })}</p>
         <h1 className="mt-3 text-3xl font-extrabold">{tier.title}</h1>
         <p className="text-ink-soft mt-2 max-w-[32ch] text-lg">{message}</p>
       </section>
@@ -97,8 +96,8 @@ async function ResultInner({ params }: { params: Params }) {
         {mine && (
           <ShareActions
             url={shareUrl}
-            caption={`${fmt(tier.shareCaption, { score: result.score, creator: quiz.creatorName })} ${absoluteUrl(paths.quiz(slug), { ref: gate.shareRef ?? slug })}`}
-            title={fmt(copy.result.sharedTitle, { player: result.playerName, score: result.score, creator: quiz.creatorName })}
+            caption={`${fmt(tier.shareCaption, { score: result.score, pct, creator: quiz.creatorName, dog })} ${absoluteUrl(paths.quiz(slug), { ref: gate.shareRef ?? slug })}`}
+            title={sharedTitle}
             quizSlug={slug}
             hostelId={hostel?.id ?? null}
             storyImageUrl={`${paths.result(slug, attemptId)}/story-image`}
@@ -135,7 +134,7 @@ async function ResultInner({ params }: { params: Params }) {
         <h2 id="board-title" className="mb-3 text-xl font-extrabold">
           {fmt(copy.board.title, { creator: quiz.creatorName })}
         </h2>
-        <ScoreList rows={board} highlightAttemptIds={mine ? status.attempts.map((a) => a.id) : [attemptId]} emptyText={copy.board.empty} />
+        <ScoreList rows={board} highlightAttemptIds={mine ? status.attempts.map((a) => a.id) : []} emptyText={copy.board.empty} />
         <Link href={paths.board(slug)} className="font-display text-terracotta mt-2 inline-block min-h-11 py-3 font-bold underline underline-offset-4">
           {copy.result.viewBoard} →
         </Link>

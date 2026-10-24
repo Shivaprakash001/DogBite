@@ -10,6 +10,7 @@ export const contactRelation = pgEnum('contact_relation', ['owner', 'warden', 'm
 export const contactStatus = pgEnum('contact_status', ['unverified', 'verified', 'opted_out']);
 export const quizStatus = pgEnum('quiz_status', ['draft', 'live', 'deleted']);
 export const gender = pgEnum('gender', ['he', 'she', 'they']);
+export const avatar = pgEnum('avatar', ['boy', 'girl']);
 export const questionKind = pgEnum('question_kind', ['fun', 'research', 'rating']);
 export const segment = pgEnum('segment', ['boys', 'girls', 'coed', 'all']);
 export const mergeStatus = pgEnum('merge_status', ['open', 'merged', 'dismissed']);
@@ -128,7 +129,9 @@ export const creators = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     sessionId: uuid('session_id').notNull(),
     displayName: text('display_name').notNull(),
+    /** Pronouns used in question text. Independent of the character art. */
     gender: gender('gender'),
+    avatar: avatar('avatar'),
     hostelId: uuid('hostel_id').references(() => hostels.id),
     /** The creator got past the hostel step (picked or skipped). */
     hostelDecided: boolean('hostel_decided').notNull().default(false),
@@ -231,6 +234,7 @@ export const attempts = pgTable(
       .references(() => quizzes.id),
     sessionId: uuid('session_id').notNull(),
     playerName: text('player_name').notNull(),
+    playerAvatar: avatar('player_avatar'),
     hostelId: uuid('hostel_id').references(() => hostels.id),
     hostelSkipped: boolean('hostel_skipped').notNull().default(false),
     score: integer('score'),

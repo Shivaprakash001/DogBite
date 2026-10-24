@@ -186,7 +186,15 @@ async function seed() {
       const gender = pick(['he', 'she', 'they'] as const);
       const [creator] = await db
         .insert(schema.creators)
-        .values({ sessionId: sid, displayName: pick(NAMES), gender, hostelId: hostel.id, hostelDecided: true, createdAt: created })
+        .values({
+          sessionId: sid,
+          displayName: pick(NAMES),
+          gender,
+          avatar: gender === 'she' ? 'girl' : gender === 'he' ? 'boy' : pick(['boy', 'girl'] as const),
+          hostelId: hostel.id,
+          hostelDecided: true,
+          createdAt: created,
+        })
         .returning();
       const segment = hostel.type === 'unknown' ? null : hostel.type;
       const candidates = buildCandidates(pool, { segment, excludeKeys: new Set(), coverage: {}, rng });
@@ -257,7 +265,14 @@ async function seed() {
         const playerHostel = sameHostel ? hostel : pick(hostelRows);
         const [attempt] = await db
           .insert(schema.attempts)
-          .values({ quizId: quiz.id, sessionId: psid, playerName: pick(NAMES), hostelId: rng() < 0.85 ? playerHostel.id : null, startedAt: at })
+          .values({
+            quizId: quiz.id,
+            sessionId: psid,
+            playerName: pick(NAMES),
+            playerAvatar: pick(['boy', 'girl'] as const),
+            hostelId: rng() < 0.85 ? playerHostel.id : null,
+            startedAt: at,
+          })
           .returning();
         events.push(
           ev(psid, 'share_open', { quiz_slug: slug }, at),

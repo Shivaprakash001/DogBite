@@ -5,12 +5,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ConsentGate, MinorNotice } from '@/components/flow/ConsentGate';
 import { HostelPicker } from '@/components/flow/HostelPicker';
 import { NameStep } from '@/components/flow/NameStep';
+import { AvatarToggle } from '@/components/flow/AvatarToggle';
+import { GuardStatus } from '@/components/scene/GuardStatus';
+import { Character } from '@/components/ui/Character';
 import { Mascot } from '@/components/ui/Mascot';
 import { ProgressPills, type PillState } from '@/components/ui/ProgressPills';
 import { useToast } from '@/components/ui/Toast';
 import { TIMING } from '@/config';
 import { fmt } from '@/content/copy';
-import type { Gender } from '@/content/types';
+import type { Avatar } from '@/content/characters';
 import { useCopy } from '@/hooks/useCopy';
 import { useSound } from '@/hooks/useSound';
 import { ApiClientError, api } from '@/lib/api-client';
@@ -25,7 +28,7 @@ import { RevealStage } from './RevealStage';
 interface PlayerFlowProps {
   slug: string;
   creatorName: string;
-  creatorGender: Gender | null;
+  creatorAvatar: Avatar;
   consented: boolean;
   minor: boolean;
   resumeAttemptId: string | null;
@@ -33,7 +36,7 @@ interface PlayerFlowProps {
 
 type Step = 'name' | 'hostel' | 'starting' | 'quiz' | 'reveal';
 
-export function PlayerFlow({ slug, creatorName, creatorGender, consented: initialConsent, minor, resumeAttemptId }: PlayerFlowProps) {
+export function PlayerFlow({ slug, creatorName, creatorAvatar, consented: initialConsent, minor, resumeAttemptId }: PlayerFlowProps) {
   const copy = useCopy();
   const toast = useToast();
   const sound = useSound();
@@ -42,6 +45,7 @@ export function PlayerFlow({ slug, creatorName, creatorGender, consented: initia
   const [consented, setConsented] = useState(initialConsent);
   const [step, setStep] = useState<Step>(resumeAttemptId ? 'starting' : 'name');
   const [playerName, setPlayerName] = useState('');
+  const [playerAvatar, setPlayerAvatar] = useState<Avatar | null>(null);
   const [attempt, setAttempt] = useState<AttemptStartDTO | null>(null);
   const [results, setResults] = useState<Map<number, AnswerResultDTO>>(new Map());
   const [current, setCurrent] = useState(0);
@@ -70,7 +74,15 @@ export function PlayerFlow({ slug, creatorName, creatorGender, consented: initia
   async function start(hostel: HostelDTO | null) {
     setStep('starting');
     try {
-      loadAttempt(await api.post<AttemptStartDTO>('/api/attempts', { slug, playerName, hostelId: hostel?.id ?? null, hostelSkipped: !hostel }));
+      loadAttempt(
+        await api.post<AttemptStartDTO>('/api/attempts', {
+          slug,
+          playerName,
+          playerAvatar: playerAvatar ?? 'boy',
+          hostelId: hostel?.id ?? null,
+          hostelSkipped: !hostel,
+        }),
+      );
     } catch (err) {
       const code = err instanceof ApiClientError ? err.code : '';
       if (code === 'no_retries' || code === 'own_quiz') {
@@ -167,7 +179,14 @@ export function PlayerFlow({ slug, creatorName, creatorGender, consented: initia
       <NameStep
         title={copy.name.titlePlayer}
         hint={fmt(copy.name.hintPlayer, { creator: creatorName })}
-        top={<Mascot mood="thinking" gender={creatorGender} size={110} className="mx-auto" priority />}
+        top={
+          <div className="flex items-end justify-center">
+            <Character avatar={creatorAvatar} mood="thinking" size={110} label={creatorName} />
+            <Mascot mood="neutral" size={90} decorative />
+          </div>
+        }
+        extra={<AvatarToggle value={playerAvatar} onChange={setPlayerAvatar} />}
+        ready={playerAvatar !== null}
         onSubmit={(name) => {
           track('name_submit', { length: [...name].length, flow: 'player' });
           setPlayerName(name);
@@ -180,13 +199,16 @@ export function PlayerFlow({ slug, creatorName, creatorGender, consented: initia
   if (step === 'starting' || !attempt) {
     return (
       <div className="flex flex-1 items-center justify-center" aria-busy="true">
-        <Mascot mood="thinking" gender={creatorGender} size={140} />
+        <Mascot mood="thinking" size={140} />
       </div>
     );
   }
   if (step === 'reveal') {
-    return <RevealStage seed={attempt.attemptId} creatorGender={creatorGender} score={finish?.score ?? null} onResult={goToResult} />;
+    return <RevealStage seed={attempt.attemptId} score={finish?.score ?? null} onResult={goToResult} />;
   }
+
+  const tally = { correct: 0, wrong: 0 };
+  for (const r of results.values()) tally[r.correct ? 'correct' : 'wrong']++;
 
   const pills: PillState[] = attempt.questions.map((q, i) => {
     const r = results.get(q.quizQuestionId);
@@ -197,20 +219,11 @@ export function PlayerFlow({ slug, creatorName, creatorGender, consented: initia
   return (
     <section className="flex flex-1 flex-col gap-6 pt-1">
       <ProgressPills states={pills} />
-      <div className="flex items-center gap-3">
-        <Mascot
-          mood={
-            pending !== null && question && results.get(question.quizQuestionId)
-              ? results.get(question.quizQuestionId)!.correct
-                ? 'happy'
-                : 'sad'
-              : 'thinking'
-          }
-          gender={creatorGender}
-          size={64}
-          decorative
-        />
-        <p className="font-display text-ink-soft text-sm font-bold">{fmt(copy.play.questionOf, { n: current + 1 })}</p>
+      <div className="flex items-center justify-between gap-3">
+        <GuardStatus correct={tally.correct} wrong={tally.wrong} />
+        <p className="font-display text-ink-soft shrink-0 text-sm font-bold">
+          {fmt(copy.play.questionOf, { n: Math.min(current + 1, attempt.questions.length) })}
+        </p>
       </div>
       {question && <QuestionCard question={question} result={results.get(question.quizQuestionId) ?? null} pendingOptionId={pending} onGuess={guess} />}
       <p className="sr-only" aria-live="assertive">

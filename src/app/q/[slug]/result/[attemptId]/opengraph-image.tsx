@@ -1,5 +1,5 @@
 import { fmt, getCopy } from '@/content/copy';
-import { tierForScore } from '@/lib/scoring';
+import { compatibilityPct, tierForScore } from '@/lib/scoring';
 import { renderOgCard } from '@/server/og';
 import { getAttemptResult } from '@/server/repos/play';
 
@@ -12,15 +12,23 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const copy = getCopy();
   const r = /^[0-9a-f-]{36}$/i.test(attemptId) ? await getAttemptResult(slug, attemptId) : null;
   if (!r || !r.finished) {
-    return renderOgCard({ kicker: copy.og.kicker, title: copy.landing.headline, highlight: copy.landing.headlineHighlight, mood: 'confused', gender: null });
+    return renderOgCard({
+      kicker: copy.landing.kicker,
+      title: copy.landing.headline,
+      highlight: copy.landing.headlineHighlight,
+      avatar: 'boy',
+      characterMood: 'thinking',
+      dogMood: 'confused',
+    });
   }
   const tier = tierForScore(r.score);
   return renderOgCard({
     kicker: tier.title,
-    score: r.score,
+    pct: compatibilityPct(r.score),
     title: fmt(copy.og.resultTitle, { player: r.playerName, creator: r.quiz.creatorName }),
     subtitle: copy.og.resultSub,
-    mood: tier.mood,
-    gender: r.quiz.gender,
+    avatar: r.playerAvatar,
+    characterMood: tier.playerMood,
+    dogMood: tier.dogMood,
   });
 }

@@ -11,14 +11,22 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const copy = getCopy();
   const quiz = await getPublicQuiz(slug);
   if (!quiz || quiz.status !== 'live') {
-    return renderOgCard({ kicker: copy.og.kicker, title: copy.landing.headline, highlight: copy.landing.headlineHighlight, mood: 'confused', gender: null });
+    return renderOgCard({
+      kicker: copy.landing.kicker,
+      title: copy.landing.headline,
+      highlight: copy.landing.headlineHighlight,
+      avatar: 'boy',
+      characterMood: 'thinking',
+      dogMood: 'confused',
+    });
   }
   return renderOgCard({
-    kicker: quiz.hostel ? `🏠 ${quiz.hostel.name}` : copy.og.kicker,
+    kicker: quiz.hostel ? `🏠 ${quiz.hostel.name}` : copy.landing.kicker,
     title: fmt(copy.quizLanding.title, { creator: quiz.creatorName }),
-    highlight: copy.landing.headlineHighlight,
-    subtitle: fmt(copy.og.quizSub, { creator: quiz.creatorName }),
-    mood: 'thinking',
-    gender: quiz.gender,
+    highlight: copy.quizLanding.titleHighlight,
+    subtitle: fmt(copy.og.quizSub, { dog: copy.dog.name }),
+    avatar: quiz.avatar,
+    characterMood: 'thinking',
+    dogMood: 'neutral',
   });
 }
